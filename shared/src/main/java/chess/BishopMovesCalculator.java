@@ -3,10 +3,7 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class Bishop extends ChessPiece {
-    public Bishop(ChessGame.TeamColor pieceColor, PieceType type) {
-        super(pieceColor, type);
-    }
+public class BishopMovesCalculator {
 
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> possibleMoves = new ArrayList<>();
@@ -61,7 +58,7 @@ public class Bishop extends ChessPiece {
         if (board.getPiece(newPosition) == null) {
             possibleMoves.add(new ChessMove(myPosition, newPosition, null));
         } else {
-            if (board.getPiece(newPosition).getTeamColor() == getTeamColor()) {
+            if (board.getPiece(newPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
                 return true;
             } else {
                 possibleMoves.add(new ChessMove(myPosition, newPosition, null));
