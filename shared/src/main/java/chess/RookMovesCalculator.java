@@ -13,7 +13,6 @@ public class RookMovesCalculator {
         int newCol = col;
 
         while (newRow < 8) {
-            //move straight up
             newRow += 1;
             if (addMoves(board, myPosition, possibleMoves, newRow, col)) {
                 break;
@@ -22,7 +21,6 @@ public class RookMovesCalculator {
 
         newRow = row;
         while (newRow > 1) {
-            //move straight down
             newRow -= 1;
             if (addMoves(board, myPosition, possibleMoves, newRow, col)) {
                 break;
@@ -30,7 +28,6 @@ public class RookMovesCalculator {
         }
 
         while (newCol > 1) {
-            //move left
             newCol -= 1;
             if (addMoves(board, myPosition, possibleMoves, row, newCol)) {
                 break;
@@ -39,7 +36,6 @@ public class RookMovesCalculator {
 
         newCol = col;
         while (newCol < 8) {
-            // move right
             newCol += 1;
             if (addMoves(board, myPosition, possibleMoves, row, newCol)) {
                 break;
