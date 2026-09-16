@@ -12,14 +12,18 @@ public class PawnMovesCalculator {
         ChessGame.TeamColor color = board.getPiece(myPosition).getTeamColor();
 
         if (color == ChessGame.TeamColor.WHITE) {
-            if (row < 7) {
+            if (row < 8) {
                 ChessPosition newPosition = new ChessPosition(row + 1, col);
-                if (board.getPiece(newPosition) == null) {
+                if (row == 7) {
+                    addPromotionPiece(board, myPosition, possibleMoves, newPosition);
+                } else if (board.getPiece(newPosition) == null) {
                     possibleMoves.add(new ChessMove(myPosition, newPosition, null));
                 }
                 if (col > 1) {
                     newPosition = new ChessPosition(row + 1, col - 1);
-                    if (board.getPiece(newPosition) != null) {
+                    if (row == 7) {
+                        addPromotionPiece(board, myPosition, possibleMoves, newPosition);
+                    } else if (board.getPiece(newPosition) != null) {
                         if (board.getPiece(newPosition).getTeamColor() == ChessGame.TeamColor.BLACK) {
                             possibleMoves.add(new ChessMove(myPosition, newPosition, null));
                         }
@@ -27,7 +31,9 @@ public class PawnMovesCalculator {
                 }
                 if (col < 8) {
                     newPosition = new ChessPosition(row + 1, col + 1);
-                    if (board.getPiece(newPosition) != null) {
+                    if (row == 7) {
+                        addPromotionPiece(board, myPosition, possibleMoves, newPosition);
+                    } else if (board.getPiece(newPosition) != null) {
                         if (board.getPiece(newPosition).getTeamColor() == ChessGame.TeamColor.BLACK) {
                             possibleMoves.add(new ChessMove(myPosition, newPosition, null));
                         }
@@ -40,21 +46,21 @@ public class PawnMovesCalculator {
                     }
                 }
             }
-            if (row == 7) {
-                ChessPosition newPosition = new ChessPosition(row + 1, col);
-                addPromotionPiece(board, myPosition, possibleMoves, newPosition);
-            }
         }
 
         if (color == ChessGame.TeamColor.BLACK) {
-            if (row > 2) {
+            if (row > 1) {
                 ChessPosition newPosition = new ChessPosition(row - 1, col);
-                if (board.getPiece(newPosition) == null) {
+                if (row == 2) {
+                    addPromotionPiece(board, myPosition, possibleMoves, newPosition);
+                } else if (board.getPiece(newPosition) == null) {
                     possibleMoves.add(new ChessMove(myPosition, newPosition, null));
                 }
                 if (col > 1) {
                     newPosition = new ChessPosition(row - 1, col - 1);
-                    if (board.getPiece(newPosition) != null) {
+                    if (row == 2) {
+                        addPromotionPiece(board, myPosition, possibleMoves, newPosition);
+                    } else if (board.getPiece(newPosition) != null) {
                         if (board.getPiece(newPosition).getTeamColor() == ChessGame.TeamColor.WHITE) {
                             possibleMoves.add(new ChessMove(myPosition, newPosition, null));
                         }
@@ -62,7 +68,9 @@ public class PawnMovesCalculator {
                 }
                 if (col < 8) {
                     newPosition = new ChessPosition(row - 1, col + 1);
-                    if (board.getPiece(newPosition) != null) {
+                    if (row == 2) {
+                        addPromotionPiece(board, myPosition, possibleMoves, newPosition);
+                    } else if (board.getPiece(newPosition) != null) {
                         if (board.getPiece(newPosition).getTeamColor() == ChessGame.TeamColor.WHITE) {
                             possibleMoves.add(new ChessMove(myPosition, newPosition, null));
                         }
@@ -74,10 +82,6 @@ public class PawnMovesCalculator {
                         possibleMoves.add(new ChessMove(myPosition, newPosition, null));
                     }
                 }
-            }
-            if (row == 2) {
-                ChessPosition newPosition = new ChessPosition(row - 1, col);
-                addPromotionPiece(board, myPosition, possibleMoves, newPosition);
             }
         }
         return possibleMoves;
