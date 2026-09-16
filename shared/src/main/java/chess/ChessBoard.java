@@ -70,24 +70,6 @@ public class ChessBoard {
         }
     }
 
-    @Override
-    public String toString() {
-        String result = "";
-
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                if (board[row][col] == null) {
-                    result += ". ";
-                } else {
-                    result += board[row][col] + " ";
-                }
-            }
-            result += "\n";
-        }
-
-        return result;
-    }
-
 
     @Override
     public boolean equals(Object o) {
