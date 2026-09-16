@@ -74,6 +74,10 @@ public class ChessPiece {
             QueenMovesCalculator moves = new QueenMovesCalculator();
             return moves.pieceMoves(board, myPosition);
         }
+        if (type == PieceType.PAWN) {
+            PawnMovesCalculator moves = new PawnMovesCalculator();
+            return moves.pieceMoves(board, myPosition);
+        }
         return List.of();
     }
 
