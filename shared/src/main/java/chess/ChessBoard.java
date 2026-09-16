@@ -44,13 +44,14 @@ public class ChessBoard {
     public void resetBoard() {
         ChessGame.TeamColor white = ChessGame.TeamColor.WHITE;
         ChessGame.TeamColor black = ChessGame.TeamColor.BLACK;
-        ChessPiece.PieceType type = ChessPiece.PieceType.PAWN;
-        for (int i = 0; i < 8; i++) {
-            ChessPiece newPawn = new ChessPiece(white, type);
-            board[1][i] = newPawn;
-            newPawn = new ChessPiece(black, type);
-            board[6][i] = newPawn;
 
+        ChessPiece newWhitePawn = new ChessPiece(white, ChessPiece.PieceType.PAWN);
+        ChessPiece newBlackPawn = new ChessPiece(black, ChessPiece.PieceType.PAWN);
+        for (int i = 0; i < 8; i++) {
+            board[1][i] = newWhitePawn;
+            board[6][i] = newBlackPawn;
+
+            ChessPiece.PieceType type = ChessPiece.PieceType.PAWN;
             if (i == 0 || i == 7) {
                 type = ChessPiece.PieceType.ROOK;
             } else if (i == 1 || i == 6) {
@@ -68,6 +69,25 @@ public class ChessBoard {
             board[7][i] = newPiece;
         }
     }
+
+    @Override
+    public String toString() {
+        String result = "";
+
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                if (board[row][col] == null) {
+                    result += ". ";
+                } else {
+                    result += board[row][col] + " ";
+                }
+            }
+            result += "\n";
+        }
+
+        return result;
+    }
+
 
     @Override
     public boolean equals(Object o) {
