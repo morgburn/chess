@@ -1,5 +1,8 @@
 package chess;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
@@ -39,16 +42,44 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        ChessGame.TeamColor white = ChessGame.TeamColor.WHITE;
+        ChessGame.TeamColor black = ChessGame.TeamColor.BLACK;
+        ChessPiece.PieceType type = ChessPiece.PieceType.PAWN;
+        for (int i = 0; i < 8; i++) {
+            ChessPiece newPawn = new ChessPiece(white, type);
+            board[1][i] = newPawn;
+            newPawn = new ChessPiece(black, type);
+            board[6][i] = newPawn;
+
+            if (i == 0 || i == 7) {
+                type = ChessPiece.PieceType.ROOK;
+            } else if (i == 1 || i == 6) {
+                type = ChessPiece.PieceType.KNIGHT;
+            } else if (i == 2 || i == 5) {
+                type = ChessPiece.PieceType.BISHOP;
+            } else if (i == 3) {
+                type = ChessPiece.PieceType.QUEEN;
+            } else {
+                type = ChessPiece.PieceType.KING;
+            }
+            ChessPiece newPiece = new ChessPiece(white, type);
+            board[0][i] = newPiece;
+            newPiece = new ChessPiece(black, type);
+            board[7][i] = newPiece;
+        }
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessBoard that = (ChessBoard) o;
+        return Objects.deepEquals(board, that.board);
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return Arrays.deepHashCode(board);
     }
 }
