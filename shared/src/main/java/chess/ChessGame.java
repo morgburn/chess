@@ -63,7 +63,7 @@ public class ChessGame {
 
         Collection<ChessMove> possibleMoves = piece.pieceMoves(board, startPosition);
         for (ChessMove move : possibleMoves) {
-            ChessBoard newBoard = board;
+            ChessBoard newBoard = new ChessBoard();
             newBoard.addPiece(move.getStartPosition(), null);
             newBoard.addPiece(move.getEndPosition(), piece);
             setBoard(newBoard);
@@ -116,7 +116,7 @@ public class ChessGame {
                 if (piece != null && piece.getTeamColor() != teamColor) {
                     Collection<ChessMove> possibleMoves = piece.pieceMoves(currentBoard, position);
                     for (ChessMove move : possibleMoves) {
-                        if (move.getEndPosition() == kingPosition) {
+                        if (move.getEndPosition().equals(kingPosition)) {
                             return true;
                         }
                     }
