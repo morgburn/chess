@@ -63,13 +63,14 @@ public class ChessGame {
 
         Collection<ChessMove> possibleMoves = piece.pieceMoves(board, startPosition);
         for (ChessMove move : possibleMoves) {
-            ChessBoard newBoard = new ChessBoard();
-            newBoard.addPiece(move.getStartPosition(), null);
-            newBoard.addPiece(move.getEndPosition(), piece);
-            setBoard(newBoard);
+            ChessBoard boardCopy = board.copy();
+            boardCopy.addPiece(move.getStartPosition(), null);
+            boardCopy.addPiece(move.getEndPosition(), piece);
+            setBoard(boardCopy);
             if (!isInCheck(color)) {
                 validMoves.add(move);
             }
+            setBoard(board);
         }
 
         return validMoves;
@@ -96,7 +97,9 @@ public class ChessGame {
             newBoard.addPiece(endPosition, piece);
             setBoard(newBoard);
 
-            //switch turn to the other colo
+            if (teamTurn == TeamColor.WHITE) {
+                setTeamTurn(TeamColor.BLACK);
+            } else {setTeamTurn(TeamColor.WHITE);}
         }
     }
 
