@@ -18,6 +18,7 @@ public class ChessGame {
     public ChessGame() {
         this.teamTurn = TeamColor.WHITE;
         this.currentBoard = new ChessBoard();
+        currentBoard.resetBoard();
     }
 
     /**
@@ -55,12 +56,12 @@ public class ChessGame {
         Collection<ChessMove> validMoves = new ArrayList<>();
         ChessBoard board = currentBoard;
         ChessPiece piece = board.getPiece(startPosition);
-        TeamColor color = getTeamTurn();
 
         if (piece == null) {
             return null;
         }
 
+        TeamColor color = piece.getTeamColor();
         Collection<ChessMove> possibleMoves = piece.pieceMoves(board, startPosition);
         for (ChessMove move : possibleMoves) {
             ChessBoard boardCopy = board.copy();
@@ -88,7 +89,7 @@ public class ChessGame {
         ChessPiece piece = currentBoard.getPiece(startPosition);
         Collection<ChessMove> validMoves = validMoves(startPosition);
 
-        if (!validMoves.contains(move)) {
+        if (!validMoves.contains(move) || piece.getTeamColor() != teamTurn) {
             throw new InvalidMoveException("Invalid Move");
         }
         else {
