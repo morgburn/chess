@@ -1,6 +1,11 @@
 package server;
 
+import com.google.gson.Gson;
 import io.javalin.*;
+import io.javalin.http.Context;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 public class Server {
 
@@ -10,7 +15,14 @@ public class Server {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
         // Register your endpoints and exception handlers here.
+        javalin.delete("/db", Server::clearDb);
 
+    }
+
+    private static void clearDb(Context ctx) {
+        var r = Map.of();
+        var json = new Gson();
+        ctx.json(json.toJson(r));
     }
 
     public int run(int desiredPort) {
