@@ -58,12 +58,10 @@ public class BishopMovesCalculator {
         if (board.getPiece(newPosition) == null) {
             possibleMoves.add(new ChessMove(myPosition, newPosition, null));
         } else {
-            if (board.getPiece(newPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
-                return true;
-            } else {
+            if (board.getPiece(newPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
                 possibleMoves.add(new ChessMove(myPosition, newPosition, null));
-                return true;
             }
+            return true;
         }
         return false;
     }

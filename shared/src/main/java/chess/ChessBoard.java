@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 public class ChessBoard {
 
-    private ChessPiece[][] board = new ChessPiece[8][8];
+    private final ChessPiece[][] board = new ChessPiece[8][8];
     public ChessBoard() {
         
     }
@@ -65,7 +65,7 @@ public class ChessBoard {
             board[1][i] = newWhitePawn;
             board[6][i] = newBlackPawn;
 
-            ChessPiece.PieceType type = ChessPiece.PieceType.PAWN;
+            ChessPiece.PieceType type;
             if (i == 0 || i == 7) {
                 type = ChessPiece.PieceType.ROOK;
             } else if (i == 1 || i == 6) {
