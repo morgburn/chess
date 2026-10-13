@@ -18,15 +18,13 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
-    public GameData getGame(int gameID) throws DataAccessException {
+    public GameData getGame(int gameID) {
         return allGameData.get(gameID);
     }
 
     @Override
     public Collection<GameData> listGames() {
-        Collection<GameData> listOfGames = new ArrayList<>();
-        listOfGames.addAll(allGameData.values());
-        return listOfGames;
+        return new ArrayList<>(allGameData.values());
     }
 
     @Override
