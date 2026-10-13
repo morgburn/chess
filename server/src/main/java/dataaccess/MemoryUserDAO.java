@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MemoryUserDAO implements UserDAO {
-    private Map<String, UserData> allUserData = new HashMap<>();
+    private final Map<String, UserData> allUserData = new HashMap<>();
 
     @Override
     public void createUser(UserData user) throws DataAccessException {
@@ -14,7 +14,7 @@ public class MemoryUserDAO implements UserDAO {
         if (allUserData.containsKey(username)) {
             throw new DataAccessException("User already exists");
         }
-            allUserData.put(username, user);
+        allUserData.put(username, user);
     }
 
     @Override
