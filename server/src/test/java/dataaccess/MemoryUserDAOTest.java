@@ -52,8 +52,11 @@ class MemoryUserDAOTest {
     @Test
     void testClear() {
         assertDoesNotThrow(() -> userDAO.createUser(fakeUser));
+        assertDoesNotThrow(() -> userDAO.createUser(new UserData("cosmo2", "cosmo321", "cosmo@cosmo.byu")));
         assertNotNull(userDAO.getUser("cosmo"));
+        assertNotNull(userDAO.getUser("cosmo2"));
         userDAO.clear();
         assertNull(userDAO.getUser("cosmo"));
+        assertNull(userDAO.getUser("cosmo2"));
     }
 }
