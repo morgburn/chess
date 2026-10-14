@@ -45,7 +45,7 @@ class MemoryAuthDAOTest {
     }
 
     @Test
-    void getAuthNull() {
+    void getAuthDoesNotExist() {
         AuthData newAuth = authDAO.getAuth("123456789");
         assertNull(newAuth);
     }
