@@ -1,7 +1,6 @@
 package dataaccess;
 
 import chess.ChessGame;
-import model.AuthData;
 import model.GameData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,9 +32,7 @@ class MemoryGameDAOTest {
     void createGameAlreadyExists() {
         assertDoesNotThrow(() -> gameDAO.createGame(fakeGame));
         GameData sameGame = new GameData(123, "cosmo1", "cosmo2", "cosmoGame", new ChessGame());
-        DataAccessException exception = assertThrows(DataAccessException.class, () -> {
-            gameDAO.createGame(sameGame);
-        });
+        DataAccessException exception = assertThrows(DataAccessException.class, () -> gameDAO.createGame(sameGame));
         assertEquals("gameID already exists", exception.getMessage());
     }
 

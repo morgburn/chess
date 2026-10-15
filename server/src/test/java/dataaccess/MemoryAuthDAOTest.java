@@ -1,7 +1,6 @@
 package dataaccess;
 
 import model.AuthData;
-import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,9 +29,7 @@ class MemoryAuthDAOTest {
     void createAuthAlreadyExists() {
         assertDoesNotThrow(() -> authDAO.createAuth(fakeAuth));
         AuthData sameAuth = new AuthData("123456789", "cosmo2");
-        DataAccessException exception = assertThrows(DataAccessException.class, () -> {
-            authDAO.createAuth(sameAuth);
-        });
+        DataAccessException exception = assertThrows(DataAccessException.class, () -> authDAO.createAuth(sameAuth));
         assertEquals("authToken already exists", exception.getMessage());
     }
 
