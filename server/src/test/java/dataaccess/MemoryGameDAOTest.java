@@ -21,24 +21,24 @@ class MemoryGameDAOTest {
     }
 
     @Test
-    void createGameSuccess() {
-        assertDoesNotThrow(() -> gameDAO.createGame(fakeGame));
+    void createGameSuccess() throws DataAccessException {
+        gameDAO.createGame(fakeGame);
         GameData newGame = gameDAO.getGame(123);
         assertNotNull(newGame);
         assertEquals(fakeGame, newGame);
     }
 
     @Test
-    void createGameAlreadyExists() {
-        assertDoesNotThrow(() -> gameDAO.createGame(fakeGame));
+    void createGameAlreadyExists() throws DataAccessException {
+        gameDAO.createGame(fakeGame);
         GameData sameGame = new GameData(123, "cosmo1", "cosmo2", "cosmoGame", new ChessGame());
         DataAccessException exception = assertThrows(DataAccessException.class, () -> gameDAO.createGame(sameGame));
         assertEquals("gameID already exists", exception.getMessage());
     }
 
     @Test
-    void getGameSuccess() {
-        assertDoesNotThrow(() -> gameDAO.createGame(fakeGame));
+    void getGameSuccess() throws DataAccessException {
+        gameDAO.createGame(fakeGame);
         GameData newGame = gameDAO.getGame(123);
         assertNotNull(newGame);
         assertEquals(123, newGame.gameID());
@@ -51,10 +51,10 @@ class MemoryGameDAOTest {
     }
 
     @Test
-    void listGamesNormal() {
-        assertDoesNotThrow(() -> gameDAO.createGame(fakeGame));
-        assertDoesNotThrow(() -> gameDAO.createGame(new GameData(321, "cosmo1", "cosmo2", "cosmoGame", new ChessGame())));
-        assertDoesNotThrow(() -> gameDAO.createGame(new GameData(1, "me", "you", "Our Game", new ChessGame())));
+    void listGamesNormal() throws DataAccessException {
+        gameDAO.createGame(fakeGame);
+        gameDAO.createGame(new GameData(321, "cosmo1", "cosmo2", "cosmoGame", new ChessGame()));
+        gameDAO.createGame(new GameData(1, "me", "you", "Our Game", new ChessGame()));
         Collection<GameData> allGames = gameDAO.listGames();
         assertEquals(3, allGames.size());
     }
@@ -66,18 +66,18 @@ class MemoryGameDAOTest {
     }
 
     @Test
-    void updateGameWhite() {
-        assertDoesNotThrow(() -> gameDAO.createGame(fakeGame));
-        assertDoesNotThrow(() -> gameDAO.updateGame(123, ChessGame.TeamColor.WHITE, "newWhitePlayer"));
+    void updateGameWhite() throws DataAccessException {
+        gameDAO.createGame(fakeGame);
+        gameDAO.updateGame(123, ChessGame.TeamColor.WHITE, "newWhitePlayer");
         GameData updatedGame = gameDAO.getGame(123);
         assertEquals("newWhitePlayer", updatedGame.whiteUsername());
         assertNull(updatedGame.blackUsername());
     }
 
     @Test
-    void updateGameBlack() {
-        assertDoesNotThrow(() -> gameDAO.createGame(fakeGame));
-        assertDoesNotThrow(() -> gameDAO.updateGame(123, ChessGame.TeamColor.BLACK, "newBlackPlayer"));
+    void updateGameBlack() throws DataAccessException {
+        gameDAO.createGame(fakeGame);
+        gameDAO.updateGame(123, ChessGame.TeamColor.BLACK, "newBlackPlayer");
         GameData updatedGame = gameDAO.getGame(123);
         assertEquals("newBlackPlayer", updatedGame.blackUsername());
         assertNull(updatedGame.whiteUsername());
@@ -90,9 +90,9 @@ class MemoryGameDAOTest {
     }
 
     @Test
-    void clear() {
-        assertDoesNotThrow(() -> gameDAO.createGame(fakeGame));
-        assertDoesNotThrow(() -> gameDAO.createGame(new GameData(24, "bob", "pat", "Bob and Pat Game", new ChessGame())));
+    void clear() throws DataAccessException {
+        gameDAO.createGame(fakeGame);
+        gameDAO.createGame(new GameData(24, "bob", "pat", "Bob and Pat Game", new ChessGame()));
         assertNotNull(gameDAO.getGame(123));
         assertNotNull(gameDAO.getGame(24));
         gameDAO.clear();

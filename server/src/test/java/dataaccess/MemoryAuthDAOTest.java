@@ -18,24 +18,24 @@ class MemoryAuthDAOTest {
     }
 
     @Test
-    void createAuthSuccess() {
-        assertDoesNotThrow(() -> authDAO.createAuth(fakeAuth));
+    void createAuthSuccess() throws DataAccessException {
+        authDAO.createAuth(fakeAuth);
         AuthData newAuth = authDAO.getAuth("123456789");
         assertNotNull(newAuth);
         assertEquals(fakeAuth, newAuth);
     }
 
     @Test
-    void createAuthAlreadyExists() {
-        assertDoesNotThrow(() -> authDAO.createAuth(fakeAuth));
+    void createAuthAlreadyExists() throws DataAccessException {
+        authDAO.createAuth(fakeAuth);
         AuthData sameAuth = new AuthData("123456789", "cosmo2");
         DataAccessException exception = assertThrows(DataAccessException.class, () -> authDAO.createAuth(sameAuth));
         assertEquals("authToken already exists", exception.getMessage());
     }
 
     @Test
-    void getAuthSuccess() {
-        assertDoesNotThrow(() -> authDAO.createAuth(fakeAuth));
+    void getAuthSuccess() throws DataAccessException {
+        authDAO.createAuth(fakeAuth);
         AuthData newAuth = authDAO.getAuth("123456789");
         assertNotNull(newAuth);
         assertEquals("123456789", newAuth.authToken());
@@ -48,8 +48,8 @@ class MemoryAuthDAOTest {
     }
 
     @Test
-    void deleteAuthSuccess() {
-        assertDoesNotThrow(() -> authDAO.createAuth(fakeAuth));
+    void deleteAuthSuccess() throws DataAccessException {
+        authDAO.createAuth(fakeAuth);
         assertNotNull(authDAO.getAuth("123456789"));
         assertDoesNotThrow(() -> authDAO.deleteAuth("123456789"));
         assertNull(authDAO.getAuth("123456789"));
@@ -62,9 +62,9 @@ class MemoryAuthDAOTest {
     }
 
     @Test
-    void clear() {
-        assertDoesNotThrow(() -> authDAO.createAuth(fakeAuth));
-        assertDoesNotThrow(() -> authDAO.createAuth(new AuthData("987654321", "cosmo2")));
+    void clear() throws DataAccessException {
+        authDAO.createAuth(fakeAuth);
+        authDAO.createAuth(new AuthData("987654321", "cosmo2"));
         assertNotNull(authDAO.getAuth("123456789"));
         assertNotNull(authDAO.getAuth("987654321"));
         authDAO.clear();

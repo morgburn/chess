@@ -18,16 +18,16 @@ class MemoryUserDAOTest {
     }
 
     @Test
-    void testCreateUserSuccess() {
-        assertDoesNotThrow(() -> userDAO.createUser(fakeUser));
+    void testCreateUserSuccess() throws DataAccessException {
+        userDAO.createUser(fakeUser);
         UserData newUser = userDAO.getUser("cosmo");
         assertNotNull(newUser);
         assertEquals(fakeUser, newUser);
     }
 
     @Test
-    void testCreateUserDuplicateUsername() {
-        assertDoesNotThrow(() -> userDAO.createUser(fakeUser));
+    void testCreateUserDuplicateUsername() throws DataAccessException {
+        userDAO.createUser(fakeUser);
         UserData sameUser = new UserData("cosmo", "cosmo321", "cosmo@cosmo.com");
         DataAccessException exception = assertThrows(DataAccessException.class, () -> {
             userDAO.createUser(sameUser);
@@ -36,8 +36,8 @@ class MemoryUserDAOTest {
     }
 
     @Test
-    void testGetUserSuccess() {
-        assertDoesNotThrow(() -> userDAO.createUser(fakeUser));
+    void testGetUserSuccess() throws DataAccessException {
+        userDAO.createUser(fakeUser);
         UserData newUser = userDAO.getUser("cosmo");
         assertNotNull(newUser);
         assertEquals("cosmo", newUser.username());
@@ -50,9 +50,9 @@ class MemoryUserDAOTest {
     }
 
     @Test
-    void testClear() {
-        assertDoesNotThrow(() -> userDAO.createUser(fakeUser));
-        assertDoesNotThrow(() -> userDAO.createUser(new UserData("cosmo2", "cosmo321", "cosmo@cosmo.byu")));
+    void testClear() throws DataAccessException {
+        userDAO.createUser(fakeUser);
+        userDAO.createUser(new UserData("cosmo2", "cosmo321", "cosmo@cosmo.byu"));
         assertNotNull(userDAO.getUser("cosmo"));
         assertNotNull(userDAO.getUser("cosmo2"));
         userDAO.clear();
