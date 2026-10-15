@@ -1,4 +1,49 @@
 package service;
 
+import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
+import dataaccess.UserDAO;
+import model.AuthData;
+import model.UserData;
+
+import java.util.UUID;
+
 public class UserService {
+    public UserDAO userDAO;
+    public AuthDAO authDAO;
+
+    public UserService (UserDAO userDAO, AuthDAO authDAO) {
+        this.userDAO = userDAO;
+        this.authDAO = authDAO;
+    }
+
+    public static String generateToken() {
+        return UUID.randomUUID().toString();
+    }
+
+    public RegisterResult register(RegisterRequest registerRequest) throws BadRequestException, AlreadyTakenException, DataAccessException {
+        if (registerRequest == null) {
+            throw new BadRequestException("Bad Request");
+        }
+        String username = registerRequest.username();
+        String password = registerRequest.password();
+        String email = registerRequest.email();
+        if (username == null || password == null || email == null || username.isBlank() || password.isBlank() || email.isBlank()) {
+            throw new BadRequestException("Bad Request");
+        }
+
+        UserData user = userDAO.getUser(username);
+        if (user != null) {
+            throw new AlreadyTakenException("Username already taken");
+        }
+
+        UserData newUser = new UserData(username, password, email);
+        userDAO.createUser(newUser);
+
+        String authToken = generateToken();
+        AuthData auth = new AuthData(authToken, username);
+        authDAO.createAuth(auth);
+
+        return new RegisterResult(username, authToken);
+    }
 }
