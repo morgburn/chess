@@ -3,8 +3,8 @@ package service;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryUserDAO;
+import model.AuthData;
 import model.UserData;
-import org.eclipse.jetty.util.log.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,12 +13,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserServiceTest {
 
     private MemoryUserDAO users;
+    private MemoryAuthDAO auths;
     private UserService service;
 
     @BeforeEach
     void setUP() {
         users = new MemoryUserDAO();
-        MemoryAuthDAO auths = new MemoryAuthDAO();
+        auths = new MemoryAuthDAO();
         service = new UserService(users, auths);
     }
 
@@ -100,5 +101,23 @@ class UserServiceTest {
         LoginRequest loginRequest = new LoginRequest(null, null);
         BadRequestException exception = assertThrows(BadRequestException.class, () -> service.login(loginRequest));
         assertEquals("Error: bad request", exception.getMessage());
+    }
+
+    @Test
+    void logoutSuccess() throws DataAccessException {
+        auths.createAuth(new AuthData("fakeAuth", "cosmo"));
+        assertNotNull(auths.getAuth("fakeAuth"));
+
+        LogoutRequest logoutRequest = new LogoutRequest("fakeAuth");
+
+        service.logout(logoutRequest);
+        assertNull(auths.getAuth("fakeAuth"));
+    }
+
+    @Test
+    void logoutNoAuthToken() {
+        LogoutRequest logoutRequest = new LogoutRequest("fakeAuth");
+        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () -> service.logout(logoutRequest));
+        assertEquals("Error: unauthorized", exception.getMessage());
     }
 }
