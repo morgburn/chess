@@ -41,7 +41,7 @@ class UserServiceTest {
         AlreadyTakenException exception = assertThrows(AlreadyTakenException.class, () -> {
             service.register(registerRequest);
         });
-        assertEquals("Username already taken", exception.getMessage());
+        assertEquals("Error: already taken", exception.getMessage());
     }
 
     @Test
@@ -50,7 +50,7 @@ class UserServiceTest {
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
             service.register(registerRequest);
         });
-        assertEquals("Bad Request", exception.getMessage());
+        assertEquals("Error: bad request", exception.getMessage());
     }
 
     @Test
@@ -59,6 +59,6 @@ class UserServiceTest {
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
             service.register(registerRequest);
         });
-        assertEquals("Bad Request", exception.getMessage());
+        assertEquals("Error: bad request", exception.getMessage());
     }
 }

@@ -6,6 +6,7 @@ import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class UserService {
@@ -23,18 +24,18 @@ public class UserService {
 
     public RegisterResult register(RegisterRequest registerRequest) throws BadRequestException, AlreadyTakenException, DataAccessException {
         if (registerRequest == null) {
-            throw new BadRequestException("Bad Request");
+            throw new BadRequestException("Error: bad request");
         }
         String username = registerRequest.username();
         String password = registerRequest.password();
         String email = registerRequest.email();
         if (username == null || password == null || email == null || username.isBlank() || password.isBlank() || email.isBlank()) {
-            throw new BadRequestException("Bad Request");
+            throw new BadRequestException("Error: bad request");
         }
 
         UserData user = userDAO.getUser(username);
         if (user != null) {
-            throw new AlreadyTakenException("Username already taken");
+            throw new AlreadyTakenException("Error: already taken");
         }
 
         UserData newUser = new UserData(username, password, email);
@@ -45,5 +46,32 @@ public class UserService {
         authDAO.createAuth(auth);
 
         return new RegisterResult(username, authToken);
+    }
+
+    public LoginResult login(LoginRequest loginRequest) throws DataAccessException {
+        if (loginRequest == null) {
+            throw new BadRequestException("Error: bad request");
+        }
+        String username = loginRequest.username();
+        String password = loginRequest.password();
+        if (username == null || password == null || username.isBlank() || password.isBlank()) {
+            throw new BadRequestException("Error: bad request");
+        }
+
+        UserData user = userDAO.getUser(username);
+        if (user == null) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+
+        String userPassword = user.password();
+        if (!Objects.equals(userPassword, password)) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+
+        String authToken = generateToken();
+        AuthData auth = new AuthData(authToken, username);
+        authDAO.createAuth(auth);
+
+        return new LoginResult(username, authToken);
     }
 }
