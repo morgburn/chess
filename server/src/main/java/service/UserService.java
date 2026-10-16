@@ -10,8 +10,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class UserService {
-    public UserDAO userDAO;
-    public AuthDAO authDAO;
+    private final UserDAO userDAO;
+    private final AuthDAO authDAO;
 
     public UserService (UserDAO userDAO, AuthDAO authDAO) {
         this.userDAO = userDAO;
@@ -79,12 +79,11 @@ public class UserService {
         if (logoutRequest == null) {
             throw new BadRequestException("Error: bad request");
         }
-        String username = logoutRequest.authToken();
-        if (username == null || username.isBlank()) {
+        String authToken = logoutRequest.authToken();
+        if (authToken == null || authToken.isBlank()) {
             throw new BadRequestException("Error: bad request");
         }
 
-        String authToken = logoutRequest.authToken();
         AuthData auth = authDAO.getAuth(authToken);
         if (auth == null) {
             throw new UnauthorizedException("Error: unauthorized");
