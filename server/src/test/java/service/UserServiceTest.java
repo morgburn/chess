@@ -4,7 +4,6 @@ import dataaccess.DataAccessException;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryUserDAO;
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,13 +12,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserServiceTest {
 
     private MemoryUserDAO users;
-    private MemoryAuthDAO auths;
     private UserService service;
 
     @BeforeEach
     void setUP() {
         users = new MemoryUserDAO();
-        auths = new MemoryAuthDAO();
+        MemoryAuthDAO auths = new MemoryAuthDAO();
         service = new UserService(users, auths);
     }
 
@@ -37,9 +35,30 @@ class UserServiceTest {
     }
 
     @Test
-    void registerDuplicateUsername() throws DataAccessException {
+    void registerDuplicateUsername() throws AlreadyTakenException, DataAccessException {
         users.createUser(new UserData("cosmo", "password5", "cougar@email.com"));
         RegisterRequest registerRequest = new RegisterRequest("cosmo", "12345", "cosmo@fakeemail.com");
+        AlreadyTakenException exception = assertThrows(AlreadyTakenException.class, () -> {
+            service.register(registerRequest);
+        });
+        assertEquals("Username already taken", exception.getMessage());
+    }
 
+    @Test
+    void registerBadRequestEmptyStrings() throws BadRequestException {
+        RegisterRequest registerRequest = new RegisterRequest("", "", "");
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
+            service.register(registerRequest);
+        });
+        assertEquals("Bad Request", exception.getMessage());
+    }
+
+    @Test
+    void registerBadRequestNull() throws BadRequestException {
+        RegisterRequest registerRequest = new RegisterRequest(null, null, null);
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
+            service.register(registerRequest);
+        });
+        assertEquals("Bad Request", exception.getMessage());
     }
 }
