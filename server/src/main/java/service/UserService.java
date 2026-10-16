@@ -48,7 +48,7 @@ public class UserService {
         return new RegisterResult(username, authToken);
     }
 
-    public LoginResult login(LoginRequest loginRequest) throws DataAccessException {
+    public LoginResult login(LoginRequest loginRequest) throws UnauthorizedException, BadRequestException, DataAccessException {
         if (loginRequest == null) {
             throw new BadRequestException("Error: bad request");
         }
