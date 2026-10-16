@@ -74,4 +74,22 @@ public class UserService {
 
         return new LoginResult(username, authToken);
     }
+
+    public void logout(LogoutRequest logoutRequest) throws DataAccessException {
+        if (logoutRequest == null) {
+            throw new BadRequestException("Error: bad request");
+        }
+        String username = logoutRequest.authToken();
+        if (username == null || username.isBlank()) {
+            throw new BadRequestException("Error: bad request");
+        }
+
+        String authToken = logoutRequest.authToken();
+        AuthData auth = authDAO.getAuth(authToken);
+        if (auth == null) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+
+        authDAO.deleteAuth(authToken);
+    }
 }
