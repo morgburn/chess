@@ -76,23 +76,52 @@ class GameServiceTest {
     }
 
     @Test
-    void createGameSuccess() {
+    void createGameSuccess() throws DataAccessException {
+        auths.createAuth(new AuthData("fakeAuth", "cosmo"));
+        CreateGameRequest createGameRequest = new CreateGameRequest("fakeAuth", "Game 1");
+        CreateGameResult createGameResult = service.createGame(createGameRequest);
+        assertEquals(1, createGameResult.gameID());
+        assertEquals("Game 1", games.getGame(1).gameName());
+        assertNull(games.getGame(1).whiteUsername());
+        assertNull(games.getGame(1).blackUsername());
+
+        auths.createAuth(new AuthData("anotherFakeAuth", "cosmo2"));
+        createGameRequest = new CreateGameRequest("anotherFakeAuth", "Game 2");
+        createGameResult = service.createGame(createGameRequest);
+        assertEquals(2, createGameResult.gameID());
+        assertEquals("Game 2", games.getGame(2).gameName());
+        assertNull(games.getGame(2).whiteUsername());
+        assertNull(games.getGame(2).blackUsername());
     }
 
     @Test
-    void createGameNoGameName() {
+    void createGameNoGameName() throws DataAccessException {
+        auths.createAuth(new AuthData("fakeAuth", "cosmo"));
+        CreateGameRequest createGameRequest = new CreateGameRequest("fakeAuth", "");
+
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> service.createGame(createGameRequest));
+        assertEquals("Error: bad request", exception.getMessage());
     }
 
     @Test
     void createGameInvalidToken() {
+        CreateGameRequest createGameRequest = new CreateGameRequest("fakeAuth", "Game 1");
+        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () -> service.createGame(createGameRequest));
+        assertEquals("Error: unauthorized", exception.getMessage());
     }
 
     @Test
     void createGameBadRequestNull() {
+        CreateGameRequest createGameRequest = new CreateGameRequest(null, "Game");
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> service.createGame(createGameRequest));
+        assertEquals("Error: bad request", exception.getMessage());
     }
 
     @Test
     void createGameBadRequestEmptyToken() {
+        CreateGameRequest createGameRequest = new CreateGameRequest("", "Game");
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> service.createGame(createGameRequest));
+        assertEquals("Error: bad request", exception.getMessage());
     }
 
     @Test
