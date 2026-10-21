@@ -19,10 +19,58 @@ class GameServiceTest {
     }
 
     @Test
-    void createGame() {
+    void listGamesBadRequestNull() {
     }
 
     @Test
-    void joinGame() {
+    void listGamesBadRequestEmptyToken() {
+    }
+
+    @Test
+    void createGameSuccess() {
+    }
+
+    @Test
+    void createGameNoGameName() {
+    }
+
+    @Test
+    void createGameInvalidToken() {
+    }
+
+    @Test
+    void createGameBadRequestNull() {
+    }
+
+    @Test
+    void createGameBadRequestEmptyToken() {
+    }
+
+    @Test
+    void joinGameWhiteSuccess() {
+    }
+
+    @Test
+    void joinGameBlackSuccess() {
+    }
+
+    @Test
+    void joinGameBadRequestNull() {
+    }
+
+    @Test
+    void joinGameBadRequestInvalidGameID() {
+    }
+
+    @Test
+    void joinGameDoesNotExist() {
+    }
+
+    @Test
+    void joinGameWhiteTaken() {
+    }
+
+    @Test
+    void joinGameBlackTaken() {
     }
 }
