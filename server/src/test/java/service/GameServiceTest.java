@@ -125,30 +125,73 @@ class GameServiceTest {
     }
 
     @Test
-    void joinGameWhiteSuccess() {
+    void joinGameWhiteSuccess() throws DataAccessException {
+        auths.createAuth(new AuthData("fakeAuth", "user1"));
+        games.createGame(new GameData(1, null, "user2", "fakeGame", new ChessGame()));
+        JoinGameRequest joinGameRequest = new JoinGameRequest("fakeAuth", ChessGame.TeamColor.WHITE, 1);
+        service.joinGame(joinGameRequest);
+
+        assertEquals("user1", games.getGame(1).whiteUsername());
+        assertEquals("user2", games.getGame(1).blackUsername());
     }
 
     @Test
-    void joinGameBlackSuccess() {
+    void joinGameBlackSuccess() throws DataAccessException {
+        auths.createAuth(new AuthData("fakeAuth", "user2"));
+        games.createGame(new GameData(5, null, null, "fakeGame", new ChessGame()));
+        JoinGameRequest joinGameRequest = new JoinGameRequest("fakeAuth", ChessGame.TeamColor.BLACK, 5);
+        service.joinGame(joinGameRequest);
+
+        assertNull(games.getGame(5).whiteUsername());
+        assertEquals("user2", games.getGame(5).blackUsername());
     }
 
     @Test
     void joinGameBadRequestNull() {
+        JoinGameRequest joinGameRequest = new JoinGameRequest(null, ChessGame.TeamColor.WHITE, 1);
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> service.joinGame(joinGameRequest));
+        assertEquals("Error: bad request", exception.getMessage());
     }
 
     @Test
-    void joinGameBadRequestInvalidGameID() {
+    void joinGameInvalidToken() throws DataAccessException {
+        JoinGameRequest joinGameRequest = new JoinGameRequest("fakeAuth", ChessGame.TeamColor.WHITE, 5);
+        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () -> service.joinGame(joinGameRequest));
+        assertEquals("Error: unauthorized", exception.getMessage());
     }
 
     @Test
-    void joinGameDoesNotExist() {
+    void joinGameBadRequestInvalidGameID() throws DataAccessException {
+        auths.createAuth(new AuthData("fakeAuth", "cosmo"));
+        JoinGameRequest joinGameRequest = new JoinGameRequest("fakeAuth", ChessGame.TeamColor.WHITE, -1);
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> service.joinGame(joinGameRequest));
+        assertEquals("Error: bad request", exception.getMessage());
     }
 
     @Test
-    void joinGameWhiteTaken() {
+    void joinGameDoesNotExist() throws DataAccessException {
+        auths.createAuth(new AuthData("fakeAuth", "cosmo"));
+        games.createGame(new GameData(1, null, null, "fakeGame", new ChessGame()));
+        JoinGameRequest joinGameRequest = new JoinGameRequest("fakeAuth", ChessGame.TeamColor.BLACK, 5);
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> service.joinGame(joinGameRequest));
+        assertEquals("Error: bad request", exception.getMessage());
     }
 
     @Test
-    void joinGameBlackTaken() {
+    void joinGameWhiteTaken() throws DataAccessException {
+        auths.createAuth(new AuthData("fakeAuth", "user2"));
+        games.createGame(new GameData(3, "user1", null, "fakeGame", new ChessGame()));
+        JoinGameRequest joinGameRequest = new JoinGameRequest("fakeAuth", ChessGame.TeamColor.WHITE, 3);
+        AlreadyTakenException exception = assertThrows(AlreadyTakenException.class, () -> service.joinGame(joinGameRequest));
+        assertEquals("Error: already taken", exception.getMessage());
+    }
+
+    @Test
+    void joinGameBlackTaken() throws DataAccessException {
+        auths.createAuth(new AuthData("fakeAuth", "user2"));
+        games.createGame(new GameData(7, "user1", "user3", "fakeGame", new ChessGame()));
+        JoinGameRequest joinGameRequest = new JoinGameRequest("fakeAuth", ChessGame.TeamColor.BLACK, 7);
+        AlreadyTakenException exception = assertThrows(AlreadyTakenException.class, () -> service.joinGame(joinGameRequest));
+        assertEquals("Error: already taken", exception.getMessage());
     }
 }
