@@ -41,7 +41,8 @@ public class GameService {
             throw new BadRequestException("Error: bad request");
         }
         String authToken = createGameRequest.authToken();
-        if (authToken == null || authToken.isBlank()) {
+        String gameName = createGameRequest.gameName();
+        if (authToken == null || authToken.isBlank() || gameName == null || gameName.isBlank()) {
             throw new BadRequestException("Error: bad request");
         }
 
@@ -51,11 +52,46 @@ public class GameService {
         }
 
         int gameID = currentGameID;
-        GameData newGame = new GameData(gameID, null, null, createGameRequest.gameName(), new ChessGame());
+        GameData newGame = new GameData(gameID, null, null, gameName, new ChessGame());
         currentGameID++;
 
         gameDAO.createGame(newGame);
 
         return new CreateGameResult(gameID);
+    }
+
+    public void joinGame(JoinGameRequest joinGameRequest) throws DataAccessException {
+        if (joinGameRequest == null) {
+            throw new BadRequestException("Error: bad request");
+        }
+
+        String authToken = joinGameRequest.authToken();
+        ChessGame.TeamColor playerColor = joinGameRequest.playerColor();
+        int gameID = joinGameRequest.gameID();
+        if (authToken == null || authToken.isBlank() || playerColor == null || gameID <= 0) {
+            throw new BadRequestException("Error: bad request");
+        }
+
+        AuthData auth = authDAO.getAuth(authToken);
+        if (auth == null) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+
+        GameData game = gameDAO.getGame(gameID);
+        if (game == null) {
+            throw new BadRequestException("Error: bad request");
+        }
+
+        if (playerColor == ChessGame.TeamColor.WHITE) {
+            if (game.whiteUsername() != null) {
+                throw new AlreadyTakenException("Error: already taken");
+            }
+        } else {
+            if (game.blackUsername() != null) {
+                throw new AlreadyTakenException("Error: already taken");
+            }
+        }
+
+        gameDAO.updateGame(gameID, playerColor, auth.username());
     }
 }
