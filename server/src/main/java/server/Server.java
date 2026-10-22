@@ -2,10 +2,10 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.*;
+import handler.ClearHandler;
 import handler.GameHandler;
 import handler.UserHandler;
 import io.javalin.*;
-import io.javalin.http.Context;
 import service.*;
 
 import java.util.Map;
@@ -39,15 +39,18 @@ public class Server {
                     ctx.result(new Gson().toJson(Map.of("message", "Error: " + exception.getMessage())));
                 });
 
-        MemoryUserDAO userDAO = new MemoryUserDAO();
-        MemoryGameDAO gameDAO = new MemoryGameDAO();
-        MemoryAuthDAO authDAO = new MemoryAuthDAO();
+        MemoryUserDAO users = new MemoryUserDAO();
+        MemoryGameDAO games = new MemoryGameDAO();
+        MemoryAuthDAO auths = new MemoryAuthDAO();
 
-        UserService userService = new UserService(userDAO, authDAO);
+        UserService userService = new UserService(users, auths);
         UserHandler userHandler = new UserHandler(userService);
 
-        GameService gameService = new GameService(gameDAO, authDAO);
+        GameService gameService = new GameService(games, auths);
         GameHandler gameHandler = new GameHandler(gameService);
+
+        ClearService clearService = new ClearService(users, games, auths);
+        ClearHandler clearHandler = new ClearHandler(clearService);
 
         javalin.post("/user", userHandler::register);
         javalin.post("/session", userHandler::login);
@@ -57,14 +60,8 @@ public class Server {
         javalin.post("/game", gameHandler::createGame);
         javalin.put("/game", gameHandler::joinGame);
 
-        javalin.delete("/db", Server::clearDb);
+        //javalin.delete("/db", clearHandler::clear);
 
-    }
-
-    private static void clearDb(Context ctx) {
-        var r = Map.of();
-        var json = new Gson();
-        ctx.json(json.toJson(r));
     }
 
     public int run(int desiredPort) {
