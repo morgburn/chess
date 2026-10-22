@@ -38,7 +38,8 @@ public class UserHandler {
 
         userService.logout(logoutRequest);
         ctx.status(200);
-        ctx.json(Map.of());
+        Gson gson = new Gson();
+        ctx.result(gson.toJson(logoutRequest));
     }
 
 }

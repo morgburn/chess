@@ -2,13 +2,11 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.*;
+import handler.GameHandler;
 import handler.UserHandler;
 import io.javalin.*;
 import io.javalin.http.Context;
-import service.AlreadyTakenException;
-import service.BadRequestException;
-import service.UnauthorizedException;
-import service.UserService;
+import service.*;
 
 import java.util.Map;
 
@@ -22,30 +20,40 @@ public class Server {
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
                 .exception(BadRequestException.class, (exception, ctx) -> {
                     ctx.status(400);
-                    ctx.json(Map.of("message", "Error: bad request"));
+                    ctx.contentType("application/json");
+                    ctx.result(new Gson().toJson(Map.of("message", "Error: bad request")));
                 })
                 .exception(UnauthorizedException.class, (exception, ctx) -> {
                     ctx.status(401);
-                    ctx.json(Map.of("message", "Error: unauthorized"));
+                    ctx.contentType("application/json");
+                    ctx.result(new Gson().toJson(Map.of("message", "Error: unauthorized")));
                 })
                 .exception(AlreadyTakenException.class, (exception, ctx) -> {
                     ctx.status(403);
-                    ctx.json(Map.of("message", "Error: already taken"));
+                    ctx.contentType("application/json");
+                    ctx.result(new Gson().toJson(Map.of("message", "Error: already taken")));
                 })
                 .exception(DataAccessException.class, (exception, ctx) -> {
                     ctx.status(500);
-                    ctx.json(Map.of("message", "Error: " + exception.getMessage()));
+                    ctx.contentType("application/json");
+                    ctx.result(new Gson().toJson(Map.of("message", "Error: " + exception.getMessage())));
                 });
 
         MemoryUserDAO userDAO = new MemoryUserDAO();
+        MemoryGameDAO gameDAO = new MemoryGameDAO();
         MemoryAuthDAO authDAO = new MemoryAuthDAO();
 
         UserService userService = new UserService(userDAO, authDAO);
         UserHandler userHandler = new UserHandler(userService);
 
+        GameService gameService = new GameService(gameDAO, authDAO);
+        GameHandler gameHandler = new GameHandler(gameService);
+
         javalin.post("/user", userHandler::register);
         javalin.post("/session", userHandler::login);
         javalin.delete("/session", userHandler::logout);
+
+        javalin.get("/game", gameHandler::listGames);
 
         javalin.delete("/db", Server::clearDb);
 
