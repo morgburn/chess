@@ -9,7 +9,6 @@ import model.GameData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -154,7 +153,7 @@ class GameServiceTest {
     }
 
     @Test
-    void joinGameInvalidToken() throws DataAccessException {
+    void joinGameInvalidToken() {
         JoinGameRequest joinGameRequest = new JoinGameRequest("fakeAuth", ChessGame.TeamColor.WHITE, 5);
         UnauthorizedException exception = assertThrows(UnauthorizedException.class, () -> service.joinGame(joinGameRequest));
         assertEquals("Error: unauthorized", exception.getMessage());

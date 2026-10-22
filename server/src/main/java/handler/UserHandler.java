@@ -5,8 +5,6 @@ import dataaccess.DataAccessException;
 import io.javalin.http.Context;
 import service.*;
 
-import java.util.Map;
-
 public class UserHandler {
     private final UserService userService;
 
