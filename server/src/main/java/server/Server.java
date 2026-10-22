@@ -5,8 +5,6 @@ import dataaccess.*;
 import handler.UserHandler;
 import io.javalin.*;
 import io.javalin.http.Context;
-import org.eclipse.jetty.server.Authentication;
-import org.jetbrains.annotations.NotNull;
 import service.AlreadyTakenException;
 import service.BadRequestException;
 import service.UnauthorizedException;
@@ -46,6 +44,9 @@ public class Server {
         UserHandler userHandler = new UserHandler(userService);
 
         javalin.post("/user", userHandler::register);
+        javalin.post("/session", userHandler::login);
+        javalin.delete("/session", userHandler::logout);
+
         javalin.delete("/db", Server::clearDb);
 
     }

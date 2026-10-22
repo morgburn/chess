@@ -20,7 +20,7 @@ public class UserHandler {
 
         RegisterResult registerResult = userService.register(registerRequest);
         ctx.status(200);
-        ctx.json(registerResult);
+        ctx.result(gson.toJson(registerResult));
     }
 
     public void login(Context ctx) throws DataAccessException {
@@ -29,7 +29,7 @@ public class UserHandler {
 
         LoginResult loginResult = userService.login(loginRequest);
         ctx.status(200);
-        ctx.json(loginResult);
+        ctx.result(gson.toJson(loginResult));
     }
 
     public void logout(Context ctx) throws DataAccessException {
