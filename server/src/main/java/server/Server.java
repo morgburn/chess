@@ -1,13 +1,16 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
+import dataaccess.*;
+import handler.UserHandler;
 import io.javalin.*;
 import io.javalin.http.Context;
+import org.eclipse.jetty.server.Authentication;
 import org.jetbrains.annotations.NotNull;
 import service.AlreadyTakenException;
 import service.BadRequestException;
 import service.UnauthorizedException;
+import service.UserService;
 
 import java.util.Map;
 
@@ -16,6 +19,8 @@ public class Server {
     private final Javalin javalin;
 
     public Server() {
+
+        // Register your endpoints and exception handlers here.
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
                 .exception(BadRequestException.class, (exception, ctx) -> {
                     ctx.status(400);
@@ -34,7 +39,13 @@ public class Server {
                     ctx.json(Map.of("message", "Error: " + exception.getMessage()));
                 });
 
-        // Register your endpoints and exception handlers here.
+        MemoryUserDAO userDAO = new MemoryUserDAO();
+        MemoryAuthDAO authDAO = new MemoryAuthDAO();
+
+        UserService userService = new UserService(userDAO, authDAO);
+        UserHandler userHandler = new UserHandler(userService);
+
+        javalin.post("/user", userHandler::register);
         javalin.delete("/db", Server::clearDb);
 
     }

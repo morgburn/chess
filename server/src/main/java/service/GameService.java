@@ -19,7 +19,7 @@ public class GameService {
         this.authDAO = authDAO;
     }
 
-    public Collection<GameData> listGames(ListGamesRequest listGamesRequest) {
+    public Collection<GameData> listGames(ListGamesRequest listGamesRequest) throws UnauthorizedException, BadRequestException {
         if (listGamesRequest == null) {
             throw new BadRequestException("Error: bad request");
         }
@@ -36,7 +36,7 @@ public class GameService {
         return gameDAO.listGames();
     }
 
-    public CreateGameResult createGame(CreateGameRequest createGameRequest) throws DataAccessException {
+    public CreateGameResult createGame(CreateGameRequest createGameRequest) throws UnauthorizedException, BadRequestException, DataAccessException {
         if (createGameRequest == null) {
             throw new BadRequestException("Error: bad request");
         }
@@ -60,7 +60,7 @@ public class GameService {
         return new CreateGameResult(gameID);
     }
 
-    public void joinGame(JoinGameRequest joinGameRequest) throws DataAccessException {
+    public void joinGame(JoinGameRequest joinGameRequest) throws UnauthorizedException, BadRequestException, AlreadyTakenException, DataAccessException {
         if (joinGameRequest == null) {
             throw new BadRequestException("Error: bad request");
         }

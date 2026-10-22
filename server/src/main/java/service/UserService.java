@@ -75,7 +75,7 @@ public class UserService {
         return new LoginResult(username, authToken);
     }
 
-    public void logout(LogoutRequest logoutRequest) throws DataAccessException {
+    public void logout(LogoutRequest logoutRequest) throws UnauthorizedException, BadRequestException, DataAccessException {
         if (logoutRequest == null) {
             throw new BadRequestException("Error: bad request");
         }
