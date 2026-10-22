@@ -60,7 +60,7 @@ public class Server {
         javalin.post("/game", gameHandler::createGame);
         javalin.put("/game", gameHandler::joinGame);
 
-        //javalin.delete("/db", clearHandler::clear);
+        javalin.delete("/db", clearHandler::clear);
 
     }
 

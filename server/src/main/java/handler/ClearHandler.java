@@ -1,5 +1,6 @@
 package handler;
 
+import io.javalin.http.Context;
 import service.ClearService;
 
 public class ClearHandler {
@@ -9,7 +10,8 @@ public class ClearHandler {
         this.clearService = clearService;
     }
 
-    public void clear() {
+    public void clear(Context ctx) {
         clearService.clear();
+        ctx.status(200);
     }
 }
