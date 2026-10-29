@@ -5,6 +5,10 @@ import dataaccess.UserDAO;
 import model.UserData;
 
 public class SQLUserDAO implements UserDAO {
+    public SQLUserDAO() throws DataAccessException {
+        DatabaseInitializer.configureDatabase();
+    }
+
     @Override
     public void createUser(UserData user) throws DataAccessException {
 
