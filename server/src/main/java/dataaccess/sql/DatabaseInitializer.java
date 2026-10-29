@@ -1,8 +1,14 @@
 package dataaccess.sql;
 
+import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
 public class DatabaseInitializer {
 
-    private final String[] createStatements = {
+    static public final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS  users (
               `username` varchar(256) NOT NULL,
@@ -31,4 +37,17 @@ public class DatabaseInitializer {
             )
             """
     };
+
+    static public void configureDatabase() throws DataAccessException {
+        DatabaseManager.createDatabase();
+        try (Connection conn = DatabaseManager.getConnection()) {
+            for (String statement : createStatements) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()), ex);
+        }
+    }
 }
