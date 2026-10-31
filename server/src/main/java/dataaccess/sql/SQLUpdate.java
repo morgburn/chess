@@ -22,8 +22,7 @@ public class SQLUpdate {
                         case String p -> ps.setString(i + 1, p);
                         case Integer p -> ps.setInt(i + 1, p);
                         case null -> ps.setNull(i + 1, NULL);
-                        default -> {
-                        }
+                        default -> throw new DataAccessException(String.format("Unable to update database: %s", param.getClass().getSimpleName()));
                     }
                 }
                 ps.executeUpdate();

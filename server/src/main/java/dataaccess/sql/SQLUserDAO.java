@@ -1,8 +1,16 @@
 package dataaccess.sql;
 
 import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
 import dataaccess.UserDAO;
 import model.UserData;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import static dataaccess.sql.SQLUpdate.executeUpdate;
 
 public class SQLUserDAO implements UserDAO {
     public SQLUserDAO() throws DataAccessException {
@@ -10,17 +18,35 @@ public class SQLUserDAO implements UserDAO {
     }
 
     @Override
-    public void createUser(UserData user) throws DataAccessException {
-
+    public void createUser(UserData users) throws DataAccessException {
+        var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
+        executeUpdate(statement, users.username(), users.password(), users.email());
     }
 
     @Override
-    public UserData getUser(String username) {
+    public UserData getUser(String username) throws DataAccessException {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT username, password, email FROM users WHERE username=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                ps.setString(1, username);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        var foundUsername = rs.getString("username");
+                        var password = rs.getString("password");
+                        var email = rs.getString("email");
+                        return new UserData(foundUsername, password, email);
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException(String.format("Unable to read data: %s", ex.getMessage()), ex);
+        }
         return null;
     }
 
     @Override
-    public void clear() {
-
+    public void clear() throws DataAccessException {
+        var statement = "TRUNCATE users";
+        executeUpdate(statement);
     }
 }
