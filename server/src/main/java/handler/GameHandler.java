@@ -17,7 +17,7 @@ public class GameHandler {
         this.gameService = gameService;
     }
 
-    public void listGames(Context ctx) {
+    public void listGames(Context ctx) throws DataAccessException {
         String authToken = ctx.header("Authorization");
         ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);
 

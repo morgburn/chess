@@ -19,7 +19,7 @@ public class GameService {
         this.authDAO = authDAO;
     }
 
-    public Collection<GameData> listGames(ListGamesRequest listGamesRequest) throws UnauthorizedException, BadRequestException {
+    public Collection<GameData> listGames(ListGamesRequest listGamesRequest) throws UnauthorizedException, BadRequestException, DataAccessException {
         if (listGamesRequest == null) {
             throw new BadRequestException("Error: bad request");
         }

@@ -1,0 +1,76 @@
+package dataaccess.sql;
+
+import dataaccess.DataAccessException;
+import model.AuthData;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class SQLAuthDAOTest {
+
+    private SQLAuthDAO authDAO;
+    private AuthData fakeAuth;
+
+    @BeforeEach
+    void setUp() throws DataAccessException {
+        authDAO = new SQLAuthDAO();
+        authDAO.clear();
+        fakeAuth = new AuthData("123456789", "cosmo");
+    }
+
+    @Test
+    void createAuthSuccess() throws DataAccessException {
+        authDAO.createAuth(fakeAuth);
+        AuthData newAuth = authDAO.getAuth("123456789");
+        assertNotNull(newAuth);
+        assertEquals(fakeAuth, newAuth);
+    }
+
+    @Test
+    void createAuthAlreadyExists() throws DataAccessException {
+        authDAO.createAuth(fakeAuth);
+        AuthData sameAuth = new AuthData("123456789", "cosmo2");
+        DataAccessException exception = assertThrows(DataAccessException.class, () -> authDAO.createAuth(sameAuth));
+        assertEquals("authToken already exists", exception.getMessage());
+    }
+
+    @Test
+    void getAuthSuccess() throws DataAccessException {
+        authDAO.createAuth(fakeAuth);
+        AuthData newAuth = authDAO.getAuth("123456789");
+        assertNotNull(newAuth);
+        assertEquals("123456789", newAuth.authToken());
+    }
+
+    @Test
+    void getAuthDoesNotExist() throws DataAccessException {
+        AuthData newAuth = authDAO.getAuth("123456789");
+        assertNull(newAuth);
+    }
+
+    @Test
+    void deleteAuthSuccess() throws DataAccessException {
+        authDAO.createAuth(fakeAuth);
+        assertNotNull(authDAO.getAuth("123456789"));
+        assertDoesNotThrow(() -> authDAO.deleteAuth("123456789"));
+        assertNull(authDAO.getAuth("123456789"));
+    }
+
+    @Test
+    void deleteAuthNoTokenToDelete() {
+        DataAccessException deleteException = assertThrows(DataAccessException.class, () -> authDAO.deleteAuth("123456789"));
+        assertEquals("authToken doesn't exist", deleteException.getMessage());
+    }
+
+    @Test
+    void clear() throws DataAccessException {
+        authDAO.createAuth(fakeAuth);
+        authDAO.createAuth(new AuthData("987654321", "cosmo2"));
+        assertNotNull(authDAO.getAuth("123456789"));
+        assertNotNull(authDAO.getAuth("987654321"));
+        authDAO.clear();
+        assertNull(authDAO.getAuth("123456789"));
+        assertNull(authDAO.getAuth("987654321"));
+    }
+}
