@@ -4,6 +4,7 @@ import dataaccess.DataAccessException;
 import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,7 +30,9 @@ public class SQLUserDAOTest {
         userDAO.createUser(fakeUser);
         UserData newUser = userDAO.getUser("cosmo");
         assertNotNull(newUser);
-        assertEquals(fakeUser, newUser);
+        assertEquals(fakeUser.username(), newUser.username());
+        assertEquals(fakeUser.email(), newUser.email());
+        assertTrue(BCrypt.checkpw(fakeUser.password(), newUser.password()));
     }
 
     @Test

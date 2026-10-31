@@ -4,6 +4,7 @@ import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import dataaccess.UserDAO;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,8 +23,9 @@ public class SQLUserDAO implements UserDAO {
         if (getUser(users.username()) != null) {
             throw new DataAccessException("User already exists");
         }
+        String hashedPassword = BCrypt.hashpw(users.password(), BCrypt.gensalt());
         var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
-        executeUpdate(statement, users.username(), users.password(), users.email());
+        executeUpdate(statement, users.username(), hashedPassword, users.email());
     }
 
     @Override
