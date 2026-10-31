@@ -19,6 +19,9 @@ public class SQLUserDAO implements UserDAO {
 
     @Override
     public void createUser(UserData users) throws DataAccessException {
+        if (getUser(users.username()) != null) {
+            throw new DataAccessException("User already exists");
+        }
         var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
         executeUpdate(statement, users.username(), users.password(), users.email());
     }
