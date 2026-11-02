@@ -55,9 +55,9 @@ public class GameService {
         GameData newGame = new GameData(gameID, null, null, gameName, new ChessGame());
         currentGameID++;
 
-        gameDAO.createGame(newGame);
+        int createdGameID = gameDAO.createGame(newGame);
 
-        return new CreateGameResult(gameID);
+        return new CreateGameResult(createdGameID);
     }
 
     public void joinGame(JoinGameRequest joinGameRequest) throws UnauthorizedException, BadRequestException, AlreadyTakenException, DataAccessException {

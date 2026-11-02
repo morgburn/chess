@@ -9,12 +9,13 @@ public class MemoryGameDAO implements GameDAO {
     private final Map<Integer, GameData> allGameData = new HashMap<>();
 
     @Override
-    public void createGame(GameData game) throws DataAccessException {
+    public int createGame(GameData game) throws DataAccessException {
         int gameID = game.gameID();
         if (allGameData.containsKey(gameID)) {
             throw new DataAccessException("gameID already exists");
         }
         allGameData.put(gameID, game);
+        return gameID;
     }
 
     @Override
