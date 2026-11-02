@@ -2,6 +2,9 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.*;
+import dataaccess.sql.SQLAuthDAO;
+import dataaccess.sql.SQLGameDAO;
+import dataaccess.sql.SQLUserDAO;
 import handler.ClearHandler;
 import handler.GameHandler;
 import handler.UserHandler;
@@ -18,17 +21,17 @@ public class Server {
 
         // Register your endpoints and exception handlers here.
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
-                .exception(BadRequestException.class, (exception, ctx) -> {
+                .exception(BadRequestException.class, (_, ctx) -> {
                     ctx.status(400);
                     ctx.contentType("application/json");
                     ctx.result(new Gson().toJson(Map.of("message", "Error: bad request")));
                 })
-                .exception(UnauthorizedException.class, (exception, ctx) -> {
+                .exception(UnauthorizedException.class, (_, ctx) -> {
                     ctx.status(401);
                     ctx.contentType("application/json");
                     ctx.result(new Gson().toJson(Map.of("message", "Error: unauthorized")));
                 })
-                .exception(AlreadyTakenException.class, (exception, ctx) -> {
+                .exception(AlreadyTakenException.class, (_, ctx) -> {
                     ctx.status(403);
                     ctx.contentType("application/json");
                     ctx.result(new Gson().toJson(Map.of("message", "Error: already taken")));
@@ -39,9 +42,16 @@ public class Server {
                     ctx.result(new Gson().toJson(Map.of("message", "Error: " + exception.getMessage())));
                 });
 
-        MemoryUserDAO users = new MemoryUserDAO();
-        MemoryGameDAO games = new MemoryGameDAO();
-        MemoryAuthDAO auths = new MemoryAuthDAO();
+        UserDAO users;
+        GameDAO games;
+        AuthDAO auths;
+        try {
+            users = new SQLUserDAO();
+            games = new SQLGameDAO();
+            auths = new SQLAuthDAO();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
 
         UserService userService = new UserService(users, auths);
         UserHandler userHandler = new UserHandler(userService);
