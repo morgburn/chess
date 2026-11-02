@@ -75,18 +75,18 @@ class SQLGameDAOTest {
 
     @Test
     void updateGameWhite() throws DataAccessException {
-        gameDAO.createGame(fakeGame);
-        gameDAO.updateGame(123, ChessGame.TeamColor.WHITE, "newWhitePlayer");
-        GameData updatedGame = gameDAO.getGame(123);
+        int gameID = gameDAO.createGame(fakeGame);
+        gameDAO.updateGame(gameID, ChessGame.TeamColor.WHITE, "newWhitePlayer");
+        GameData updatedGame = gameDAO.getGame(gameID);
         assertEquals("newWhitePlayer", updatedGame.whiteUsername());
         assertNull(updatedGame.blackUsername());
     }
 
     @Test
     void updateGameBlack() throws DataAccessException {
-        gameDAO.createGame(fakeGame);
-        gameDAO.updateGame(123, ChessGame.TeamColor.BLACK, "newBlackPlayer");
-        GameData updatedGame = gameDAO.getGame(123);
+        int gameID = gameDAO.createGame(fakeGame);
+        gameDAO.updateGame(gameID, ChessGame.TeamColor.BLACK, "newBlackPlayer");
+        GameData updatedGame = gameDAO.getGame(gameID);
         assertEquals("newBlackPlayer", updatedGame.blackUsername());
         assertNull(updatedGame.whiteUsername());
     }
@@ -99,12 +99,11 @@ class SQLGameDAOTest {
 
     @Test
     void clear() throws DataAccessException {
-        gameDAO.createGame(fakeGame);
-        gameDAO.createGame(new GameData(24, "bob", "pat", "Bob and Pat Game", new ChessGame()));
-        assertNotNull(gameDAO.getGame(123));
-        assertNotNull(gameDAO.getGame(24));
+        int gameID1 = gameDAO.createGame(fakeGame);
+        int gameID2 = gameDAO.createGame(new GameData(2, "bob", "pat", "Bob and Pat Game", new ChessGame()));
+        assertNotNull(gameDAO.getGame(gameID1));
+        assertNotNull(gameDAO.getGame(gameID2));
         gameDAO.clear();
-        assertNull(gameDAO.getGame(123));
-        assertNull(gameDAO.getGame(24));
+        assertTrue(gameDAO.listGames().isEmpty());
     }
 }
