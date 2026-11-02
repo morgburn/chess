@@ -57,14 +57,18 @@ class SQLGameDAOTest {
     @Test
     void listGamesNormal() throws DataAccessException {
         gameDAO.createGame(fakeGame);
-        gameDAO.createGame(new GameData(321, "cosmo1", "cosmo2", "cosmoGame", new ChessGame()));
+        gameDAO.createGame(new GameData(1, "cosmo1", "cosmo2", "cosmoGame", new ChessGame()));
         gameDAO.createGame(new GameData(1, "me", "you", "Our Game", new ChessGame()));
         Collection<GameData> allGames = gameDAO.listGames();
         assertEquals(3, allGames.size());
+        Collection<String> gameNames = allGames.stream().map(GameData::gameName).toList();
+        assertTrue(gameNames.contains("New Game"));
+        assertTrue(gameNames.contains("cosmoGame"));
+        assertTrue(gameNames.contains("Our Game"));
     }
 
     @Test
-    void listGamesEmpty() {
+    void listGamesEmpty() throws DataAccessException {
         Collection<GameData> allGames = gameDAO.listGames();
         assertTrue(allGames.isEmpty());
     }

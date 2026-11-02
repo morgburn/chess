@@ -6,11 +6,13 @@ import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import dataaccess.GameDAO;
 import model.GameData;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -36,13 +38,7 @@ public class SQLGameDAO implements GameDAO {
                 ps.setInt(1, gameID);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        var foundGameID = rs.getInt("gameID");
-                        var whiteUsername = rs.getString("whiteUsername");
-                        var blackUsername = rs.getString("blackUsername");
-                        var gameName = rs.getString("gameName");
-                        var game = rs.getString("game");
-                        ChessGame newGame = new Gson().fromJson(game, ChessGame.class);
-                        return new GameData(foundGameID, whiteUsername, blackUsername, gameName, newGame);
+                        return readGame(rs);
                     }
                 }
             }
@@ -52,9 +48,33 @@ public class SQLGameDAO implements GameDAO {
         return null;
     }
 
+    @NotNull
+    private static GameData readGame(ResultSet rs) throws SQLException {
+        var foundGameID = rs.getInt("gameID");
+        var whiteUsername = rs.getString("whiteUsername");
+        var blackUsername = rs.getString("blackUsername");
+        var gameName = rs.getString("gameName");
+        var game = rs.getString("game");
+        ChessGame newGame = new Gson().fromJson(game, ChessGame.class);
+        return new GameData(foundGameID, whiteUsername, blackUsername, gameName, newGame);
+    }
+
     @Override
-    public Collection<GameData> listGames() {
-        return List.of();
+    public Collection<GameData> listGames() throws DataAccessException {
+        Collection<GameData> gameList = new ArrayList<>();
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM games";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        gameList.add(readGame(rs));
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException(String.format("Unable to read data: %s", ex.getMessage()), ex);
+        }
+        return gameList;
     }
 
     @Override
