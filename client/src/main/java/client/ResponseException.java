@@ -1,6 +1,6 @@
 package client;
 
-public class ResponseException extends RuntimeException {
+public class ResponseException extends Exception {
     private final int statusCode;
 
     public ResponseException(String message, int statusCode) {
@@ -8,7 +8,7 @@ public class ResponseException extends RuntimeException {
         this.statusCode = statusCode;
     }
 
-    public int getStatusCode() {
+    public int statusCode() {
         return statusCode;
     }
 }

@@ -1,6 +1,8 @@
 package client;
 
 import com.google.gson.Gson;
+import model.AuthData;
+import model.UserData;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -14,9 +16,24 @@ import java.util.HashMap;
 public class ServerFacade {
     private final HttpClient client = HttpClient.newHttpClient();
     private final String serverUrl;
+    private String authToken;
 
     public ServerFacade(int port) {
         serverUrl = String.format("http://localhost:%d", port);
+    }
+
+    public AuthData register(String username, String password, String email) throws ResponseException {
+        UserData user = new UserData(username, password, email);
+        var request = buildRequest("POST", "/user", user);
+        var response = sendRequest(request);
+        AuthData result = handleResponse(response, AuthData.class);
+        authToken = result.authToken();
+        return result;
+    }
+
+    public void clear() throws ResponseException {
+        var request = buildRequest("DELETE", "/db", null);
+        sendRequest(request);
     }
 
     private HttpRequest buildRequest(String method, String path, Object body) {
@@ -25,6 +42,9 @@ public class ServerFacade {
                 .method(method, makeRequestBody(body));
         if (body != null) {
             request.setHeader("Content-Type", "application/json");
+        }
+        if (authToken != null) {
+            request.setHeader("authorization", authToken);
         }
         return request.build();
     }
