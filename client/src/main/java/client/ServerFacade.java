@@ -31,9 +31,20 @@ public class ServerFacade {
         return result;
     }
 
+    public AuthData login(String username, String password) throws ResponseException {
+        UserData user = new UserData(username, password, null);
+        var request = buildRequest("POST", "/session", user);
+        var response = sendRequest(request);
+        AuthData result = handleResponse(response, AuthData.class);
+        authToken = result.authToken();
+        return result;
+    }
+
     public void clear() throws ResponseException {
+        authToken = null;
         var request = buildRequest("DELETE", "/db", null);
-        sendRequest(request);
+        var response = sendRequest(request);
+        handleResponse(response, null);
     }
 
     private HttpRequest buildRequest(String method, String path, Object body) {
