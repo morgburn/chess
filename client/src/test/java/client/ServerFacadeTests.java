@@ -67,4 +67,10 @@ public class ServerFacadeTests {
         assertEquals(401, exception.statusCode());
     }
 
+    @Test
+    void logoutSuccess() throws ResponseException {
+        facade.register("player1", "password", "p1@email.com").authToken();
+        assertDoesNotThrow(() -> facade.logout());
+    }
+
 }

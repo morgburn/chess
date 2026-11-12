@@ -40,6 +40,13 @@ public class ServerFacade {
         return result;
     }
 
+    public void logout() throws ResponseException {
+        var request = buildRequest("DELETE", "/session", null);
+        var response = sendRequest(request);
+        handleResponse(response, null);
+        authToken = null;
+    }
+
     public void clear() throws ResponseException {
         authToken = null;
         var request = buildRequest("DELETE", "/db", null);
