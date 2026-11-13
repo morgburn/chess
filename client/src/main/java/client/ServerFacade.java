@@ -13,6 +13,7 @@ import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,6 +67,12 @@ public class ServerFacade {
         var request = buildRequest("PUT", "/game", body);
         var response = sendRequest(request);
         handleResponse(response, null);
+    }
+
+    public Collection<GameData> listGames() throws ResponseException {
+        var request = buildRequest("GET", "/game", null);
+        var response = sendRequest(request);
+        return handleResponse(response, GameList.class).games();
     }
 
     public void clear() throws ResponseException {
@@ -129,4 +136,6 @@ public class ServerFacade {
     private boolean isSuccessful(int status) {
         return status == 200;
     }
+
+    private record GameList(Collection<GameData> games) {}
 }

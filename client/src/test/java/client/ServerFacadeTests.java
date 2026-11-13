@@ -1,10 +1,13 @@
 package client;
 
 import chess.ChessGame;
+import model.GameData;
 import org.junit.jupiter.api.*;
 import server.Server;
 import service.AlreadyTakenException;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -71,7 +74,7 @@ public class ServerFacadeTests {
 
     @Test
     void logoutSuccess() throws ResponseException {
-        facade.register("player1", "password", "p1@email.com").authToken();
+        facade.register("player1", "password", "p1@email.com");
         assertDoesNotThrow(() -> facade.logout());
     }
 
@@ -130,4 +133,51 @@ public class ServerFacadeTests {
         assertEquals(400, exception.statusCode());
     }
 
+    @Test
+    void listGamesSuccess() throws ResponseException {
+        facade.register("player1", "password", "p1@email.com");
+        facade.createGame("testGame");
+        facade.createGame("anotherGame");
+        facade.createGame("lastGame");
+        Collection<GameData> games = facade.listGames();
+        assertEquals(3, games.size());
+        Collection<String> gameNames = new ArrayList<>();
+        for (GameData game : games) {
+            gameNames.add(game.gameName());
+        }
+        assertTrue(gameNames.contains("testGame"));
+        assertTrue(gameNames.contains("anotherGame"));
+        assertTrue(gameNames.contains("lastGame"));
+    }
+
+    @Test
+    void listGamesAfterJoin() throws ResponseException {
+        facade.register("player1", "password", "p1@email.com");
+        facade.createGame("testGame");
+        int newGameID = facade.createGame("anotherGame");
+        facade.joinGame(ChessGame.TeamColor.WHITE, newGameID);
+        Collection<GameData> games = facade.listGames();
+        assertEquals(2, games.size());
+        for (GameData game : games) {
+            if (game.gameID() == newGameID) {
+                assertEquals("player1", game.whiteUsername());
+                assertNull(game.blackUsername());
+            }
+        }
+    }
+
+    @Test
+    void listGamesNoGames() throws ResponseException {
+        facade.register("player1", "password", "p1@email.com");
+        Collection<GameData> games = facade.listGames();
+        assertEquals(0, games.size());
+    }
+
+    @Test
+    void listGamesNotLoggedIn() throws ResponseException {
+        facade.register("player1", "password", "p1@email.com");
+        facade.logout();
+        ResponseException exception = assertThrows(ResponseException.class, () -> facade.listGames());
+        assertEquals(401, exception.statusCode());
+    }
 }
