@@ -1,7 +1,9 @@
 package client;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 
 import java.net.URI;
@@ -45,6 +47,21 @@ public class ServerFacade {
         var response = sendRequest(request);
         handleResponse(response, null);
         authToken = null;
+    }
+
+    public GameData createGame(int gameID, String gameName) throws ResponseException {
+        GameData newGame = new GameData(gameID, null, null, gameName, new ChessGame());
+        var request = buildRequest("POST", "/game", newGame);
+        var response = sendRequest(request);
+        GameData result = handleResponse(response, GameData.class);
+        gameID = result.gameID();
+        return result;
+    }
+
+    public void joinGame(ChessGame game) throws ResponseException {
+        var request = buildRequest("PUT", "/game", game);
+        var response = sendRequest(request);
+        handleResponse(response, null);
     }
 
     public void clear() throws ResponseException {

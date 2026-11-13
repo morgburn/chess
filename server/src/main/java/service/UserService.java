@@ -82,7 +82,7 @@ public class UserService {
         }
         String authToken = logoutRequest.authToken();
         if (authToken == null || authToken.isBlank()) {
-            throw new BadRequestException("Error: bad request");
+            throw new UnauthorizedException("Error: unauthorized");
         }
 
         AuthData auth = authDAO.getAuth(authToken);

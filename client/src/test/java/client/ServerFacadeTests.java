@@ -73,4 +73,11 @@ public class ServerFacadeTests {
         assertDoesNotThrow(() -> facade.logout());
     }
 
+    @Test
+    void logoutNotRegistered() {
+        ResponseException exception = assertThrows(ResponseException.class,
+                () -> facade.logout());
+        assertEquals(401, exception.statusCode());
+    }
+
 }
