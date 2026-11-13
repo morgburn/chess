@@ -59,8 +59,11 @@ public class ServerFacade {
         return result.gameID();
     }
 
-    public void joinGame(ChessGame game) throws ResponseException {
-        var request = buildRequest("PUT", "/game", game);
+    public void joinGame(ChessGame.TeamColor teamColor, int gameID) throws ResponseException {
+        Map<String, Object> body = new HashMap<>();
+        body.put("playerColor", teamColor);
+        body.put("gameID", gameID);
+        var request = buildRequest("PUT", "/game", body);
         var response = sendRequest(request);
         handleResponse(response, null);
     }

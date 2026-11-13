@@ -1,7 +1,9 @@
 package client;
 
+import chess.ChessGame;
 import org.junit.jupiter.api.*;
 import server.Server;
+import service.AlreadyTakenException;
 
 import java.util.Objects;
 
@@ -92,6 +94,40 @@ public class ServerFacadeTests {
         ResponseException exception = assertThrows(ResponseException.class,
                 () -> facade.createGame("testGame"));
         assertEquals(401, exception.statusCode());
+    }
+
+    @Test
+    void joinGameSuccess() throws ResponseException {
+        facade.register("player1", "password", "p1@email.com");
+        int returnedGameID = facade.createGame("testGame");
+        assertDoesNotThrow(() -> facade.joinGame(ChessGame.TeamColor.WHITE, returnedGameID));
+    }
+
+    @Test
+    void joinGameSuccessBothPlayers() throws ResponseException {
+        facade.register("player1", "password", "p1@email.com");
+        facade.register("player2", "password2", "p2@email.com");
+        int returnedGameID = facade.createGame("testGame");
+        assertDoesNotThrow(() -> facade.joinGame(ChessGame.TeamColor.WHITE, returnedGameID));
+        assertDoesNotThrow(() -> facade.joinGame(ChessGame.TeamColor.BLACK, returnedGameID));
+    }
+
+    @Test
+    void joinGameAlreadyTaken() throws ResponseException {
+        facade.register("player1", "password", "p1@email.com");
+        int returnedGameID = facade.createGame("testGame");
+        facade.joinGame(ChessGame.TeamColor.WHITE, returnedGameID);
+        ResponseException exception = assertThrows(ResponseException.class,
+                () -> facade.joinGame(ChessGame.TeamColor.WHITE, returnedGameID));
+        assertEquals(403, exception.statusCode());
+    }
+
+    @Test
+    void joinGameDoesNotExist() throws ResponseException {
+        facade.register("player1", "password", "p1@email.com");
+        ResponseException exception = assertThrows(ResponseException.class,
+                () -> facade.joinGame(ChessGame.TeamColor.WHITE, 1));
+        assertEquals(400, exception.statusCode());
     }
 
 }
