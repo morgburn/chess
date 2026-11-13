@@ -110,17 +110,17 @@ class GameServiceTest {
     }
 
     @Test
-    void createGameBadRequestNull() {
+    void createGameUnauthorizedNull() {
         CreateGameRequest createGameRequest = new CreateGameRequest(null, "Game");
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> service.createGame(createGameRequest));
-        assertEquals("Error: bad request", exception.getMessage());
+        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () -> service.createGame(createGameRequest));
+        assertEquals("Error: unauthorized", exception.getMessage());
     }
 
     @Test
     void createGameBadRequestEmptyToken() {
         CreateGameRequest createGameRequest = new CreateGameRequest("", "Game");
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> service.createGame(createGameRequest));
-        assertEquals("Error: bad request", exception.getMessage());
+        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () -> service.createGame(createGameRequest));
+        assertEquals("Error: unauthorized", exception.getMessage());
     }
 
     @Test

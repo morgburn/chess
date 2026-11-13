@@ -14,6 +14,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ServerFacade {
     private final HttpClient client = HttpClient.newHttpClient();
@@ -49,13 +50,13 @@ public class ServerFacade {
         authToken = null;
     }
 
-    public GameData createGame(int gameID, String gameName) throws ResponseException {
-        GameData newGame = new GameData(gameID, null, null, gameName, new ChessGame());
-        var request = buildRequest("POST", "/game", newGame);
+    public int createGame(String gameName) throws ResponseException {
+        Map<String, String> body = new HashMap<>();
+        body.put("gameName", gameName);
+        var request = buildRequest("POST", "/game", body);
         var response = sendRequest(request);
-        GameData result = handleResponse(response, GameData.class);
-        gameID = result.gameID();
-        return result;
+        var result = handleResponse(response, GameData.class);
+        return result.gameID();
     }
 
     public void joinGame(ChessGame game) throws ResponseException {

@@ -41,8 +41,11 @@ public class GameService {
             throw new BadRequestException("Error: bad request");
         }
         String authToken = createGameRequest.authToken();
+        if (authToken == null || authToken.isBlank()) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
         String gameName = createGameRequest.gameName();
-        if (authToken == null || authToken.isBlank() || gameName == null || gameName.isBlank()) {
+        if (gameName == null || gameName.isBlank()) {
             throw new BadRequestException("Error: bad request");
         }
 

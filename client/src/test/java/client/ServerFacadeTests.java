@@ -80,4 +80,18 @@ public class ServerFacadeTests {
         assertEquals(401, exception.statusCode());
     }
 
+    @Test
+    void createGameSuccess() throws ResponseException {
+        facade.register("player1", "password", "p1@email.com");
+        int returnedGameID = facade.createGame("testGame");
+        assertTrue(returnedGameID > 0);
+    }
+
+    @Test
+    void createGameNotRegistered() {
+        ResponseException exception = assertThrows(ResponseException.class,
+                () -> facade.createGame("testGame"));
+        assertEquals(401, exception.statusCode());
+    }
+
 }
