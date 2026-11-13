@@ -180,4 +180,24 @@ public class ServerFacadeTests {
         ResponseException exception = assertThrows(ResponseException.class, () -> facade.listGames());
         assertEquals(401, exception.statusCode());
     }
+
+    @Test
+    void clearUserSuccess() throws ResponseException {
+        facade.register("player1", "password", "p1@email.com");
+        facade.clear();
+        ResponseException exception = assertThrows(ResponseException.class,
+                () -> facade.login("player1", "password"));
+        assertEquals(401, exception.statusCode());
+    }
+
+    @Test
+    void clearGameSuccess() throws ResponseException {
+        facade.register("player1", "password", "p1@email.com");
+        facade.createGame("testGame");
+        facade.createGame("anotherGame");
+        facade.clear();
+        facade.register("player1", "password", "p1@email.com");
+        Collection<GameData> games = facade.listGames();
+        assertEquals(0, games.size());
+    }
 }
