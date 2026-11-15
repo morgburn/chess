@@ -2,8 +2,10 @@ package ui;
 
 import client.ResponseException;
 import client.ServerFacade;
+import model.GameData;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -60,8 +62,8 @@ public class ChessClient {
     }
 
     private String register(String... params) {
-        if (state == State.LOGGED_OUT) {
-            return "You must log in.";
+        if (state == State.LOGGED_IN) {
+            return "You are logged in. Logout to perform this command.";
         }
         if (params.length == 3) {
             try {
@@ -81,8 +83,8 @@ public class ChessClient {
     }
 
     private String login(String... params) {
-        if (state == State.LOGGED_OUT) {
-            return "You must log in.";
+        if (state == State.LOGGED_IN) {
+            return "You are logged in. Logout to perform this command.";
         }
         if (params.length == 2) {
             try {
@@ -102,11 +104,47 @@ public class ChessClient {
     }
 
     private String createGame(String... params) {
-        return "Not implemented yet.";
+        if (state == State.LOGGED_OUT) {
+            return "You must log in.";
+        }
+        if (params.length == 1) {
+            try {
+                server.createGame(params[0]);
+                return "Created game: " + params[0];
+            }
+            catch (ResponseException exception) {
+                return "Something went wrong. Try again.";
+            }
+        }
+        return "Expected: <ID>";
     }
 
     private String listGames() {
-        return "Not implemented yet.";
+        if (state == State.LOGGED_OUT) {
+            return "You must log in.";
+        }
+        try {
+            Collection<GameData> games = server.listGames();
+            if (games.isEmpty()) {
+                return "No games have been created.";
+            }
+            var result = new StringBuilder();
+            int gameNumber = 1;
+            for (GameData game : games) {
+                result.append(gameNumber).append(". Game Name: ").append(game.gameName()).append(" White Player: ");
+                if (game.whiteUsername() == null) {
+                    result.append("Open");
+                } else {result.append(game.whiteUsername());}
+                result.append(" Black Player: ");
+                if (game.blackUsername() == null) {
+                    result.append("Open");
+                } else {result.append(game.blackUsername());}
+                gameNumber++;
+            }
+            return result.toString();
+        } catch (ResponseException exception) {
+            return "Something went wrong. Try again.";
+        }
     }
 
     private String joinGame(String... params) {
