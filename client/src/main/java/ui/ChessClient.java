@@ -4,16 +4,14 @@ import client.ResponseException;
 import client.ServerFacade;
 import model.GameData;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
 
 import static ui.EscapeSequences.*;
 
 public class ChessClient {
     private final ServerFacade server;
     private State state = State.LOGGED_IN;
+    private List<GameData> listedGames;
 
     public ChessClient(int port) {
         server = new ServerFacade(port);
@@ -116,7 +114,7 @@ public class ChessClient {
                 return "Something went wrong. Try again.";
             }
         }
-        return "Expected: <ID>";
+        return "Expected: <NAME>";
     }
 
     private String listGames() {
@@ -125,26 +123,27 @@ public class ChessClient {
         }
         try {
             Collection<GameData> games = server.listGames();
+            listedGames = new ArrayList<>(games);
             if (games.isEmpty()) {
                 return "No games have been created.";
             }
             var result = new StringBuilder();
             int gameNumber = 1;
-            for (GameData game : games) {
-                result.append(gameNumber).append(". Game Name: ").append(game.gameName()).append(" White Player: ");
-                if (game.whiteUsername() == null) {
-                    result.append("Open");
-                } else {result.append(game.whiteUsername());}
-                result.append(" Black Player: ");
-                if (game.blackUsername() == null) {
-                    result.append("Open");
-                } else {result.append(game.blackUsername());}
+            for (GameData game : listedGames) {
+                result.append(gameNumber).append(". Game Name: ").append(game.gameName())
+                        .append(" White Player: ").append(usernameDisplay(game.whiteUsername()))
+                        .append(" Black Player: ").append(usernameDisplay(game.blackUsername()))
+                        .append("\n");
                 gameNumber++;
             }
             return result.toString();
         } catch (ResponseException exception) {
             return "Something went wrong. Try again.";
         }
+    }
+
+    private String usernameDisplay(String username) {
+        return Objects.requireNonNullElse(username, "Open");
     }
 
     private String joinGame(String... params) {
