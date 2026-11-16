@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessGame;
 import client.ResponseException;
 import client.ServerFacade;
 import model.GameData;
@@ -10,8 +11,8 @@ import static ui.EscapeSequences.*;
 
 public class ChessClient {
     private final ServerFacade server;
-    private State state = State.LOGGED_IN;
-    private List<GameData> listedGames;
+    private State state = State.LOGGED_OUT;
+    private List<GameData> listedGames = new ArrayList<>();
 
     public ChessClient(int port) {
         server = new ServerFacade(port);
@@ -88,7 +89,7 @@ public class ChessClient {
             try {
                 server.login(params[0], params[1]);
                 state = State.LOGGED_IN;
-                return "Logged in as " + params[0];
+                return "Logged in as " + params[0] + "\n" + help();
             }
             catch (ResponseException exception) {
                 if (exception.statusCode() == 401) {
@@ -131,8 +132,8 @@ public class ChessClient {
             int gameNumber = 1;
             for (GameData game : listedGames) {
                 result.append(gameNumber).append(". Game Name: ").append(game.gameName())
-                        .append(" White Player: ").append(usernameDisplay(game.whiteUsername()))
-                        .append(" Black Player: ").append(usernameDisplay(game.blackUsername()))
+                        .append(" | White Player: ").append(usernameDisplay(game.whiteUsername()))
+                        .append(" | Black Player: ").append(usernameDisplay(game.blackUsername()))
                         .append("\n");
                 gameNumber++;
             }
@@ -147,7 +148,32 @@ public class ChessClient {
     }
 
     private String joinGame(String... params) {
-        return "Not implemented yet.";
+        if (state == State.LOGGED_OUT) {
+            return "You must log in.";
+        }
+        if (params.length == 2) {
+            try {
+                ChessGame.TeamColor color = ChessGame.TeamColor.valueOf(params[1].toUpperCase());
+                int gameNumber = Integer.parseInt(params[0]);
+
+                if (gameNumber < 1 || gameNumber > listedGames.size()) {
+                    return "Invalid game ID number.";
+                }
+
+                int gameID = listedGames.get(gameNumber - 1).gameID();
+                server.joinGame(color, gameID);
+                return "Joined game as " + params[1];
+            } catch (IllegalArgumentException ex) {
+                return "Please provide a valid game ID and chess color.";
+            } catch (ResponseException ex) {
+                if (ex.statusCode() == 403) {
+                    return "Color is already taken.";
+                } else {
+                    return "Something went wrong. Try again.";
+                }
+            }
+        }
+        return "Expected: <ID> [WHITE|BLACK]";
     }
 
     private String observeGame(String... params) {
