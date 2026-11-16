@@ -7,6 +7,7 @@ import model.GameData;
 
 import java.util.*;
 
+import static ui.BoardUI.displayBoard;
 import static ui.EscapeSequences.*;
 
 public class ChessClient {
@@ -162,7 +163,7 @@ public class ChessClient {
 
                 int gameID = listedGames.get(gameNumber - 1).gameID();
                 server.joinGame(color, gameID);
-                return "Joined game as " + params[1];
+                return "Joined game as " + params[1] + "\n" + displayBoard(new ChessGame().getBoard(), color);
             } catch (IllegalArgumentException ex) {
                 return "Please provide a valid game ID and chess color.";
             } catch (ResponseException ex) {
@@ -187,7 +188,7 @@ public class ChessClient {
                     return "Invalid game ID number.";
                 }
                 GameData observingGame = listedGames.get(gameNumber - 1);
-                return "You are observing " + observingGame.gameName();
+                return "You are observing " + observingGame.gameName() + "\n" + displayBoard(new ChessGame().getBoard(), ChessGame.TeamColor.WHITE);
             } catch (NumberFormatException e) {
                 return "Please provide a valid game ID.";
             }

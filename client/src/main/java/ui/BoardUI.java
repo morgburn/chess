@@ -8,12 +8,6 @@ import chess.ChessPosition;
 import static ui.EscapeSequences.*;
 
 public class BoardUI {
-    public static void main(String[] args) {
-        ChessBoard newBoard = new ChessBoard();
-        newBoard.resetBoard();
-        String practiceBoard = displayBoard(newBoard, ChessGame.TeamColor.BLACK);
-        System.out.print(practiceBoard);
-    }
 
     public static String displayBoard(ChessBoard board, ChessGame.TeamColor perspective) {
         int row;
