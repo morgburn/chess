@@ -20,7 +20,7 @@ public class BoardUI {
         }
 
         StringBuilder drawnBoard = new StringBuilder();
-        drawnBoard.append(SET_BG_COLOR_DARK_GREY).append(borderLetters).append(RESET_BG_COLOR).append("\n");
+        drawnBoard.append(SET_BG_COLOR_DARK_GREY).append(RESET_TEXT_COLOR).append(borderLetters).append(RESET_BG_COLOR).append("\n");
         for (int i = 0; i < 8; i++) {
             if (perspective == ChessGame.TeamColor.WHITE) {
                 row = 8 - i;
@@ -43,7 +43,7 @@ public class BoardUI {
             }
             drawnBoard.append(SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR).append(" ").append(row).append(" ").append(RESET_BG_COLOR).append("\n");
         }
-        drawnBoard.append(SET_BG_COLOR_DARK_GREY).append(borderLetters);
+        drawnBoard.append(SET_BG_COLOR_DARK_GREY).append(borderLetters).append(RESET_BG_COLOR);
 
         return drawnBoard.toString();
     }

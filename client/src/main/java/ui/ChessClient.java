@@ -31,7 +31,7 @@ public class ChessClient {
 
             try {
                 result = eval(line);
-                System.out.print(SET_TEXT_COLOR_BLUE + result);
+                System.out.print(SET_TEXT_COLOR_GREEN + result);
             } catch (Throwable e) {
                 System.out.print("Something went wrong. Please try again.");
             }
@@ -69,7 +69,7 @@ public class ChessClient {
             try {
                 server.register(params[0], params[1], params[2]);
                 state = State.LOGGED_IN;
-                return "Registered and logged in as " + params[0];
+                return "Registered and logged in as " + params[0] + "\n" + help();
             }
             catch (ResponseException exception) {
                 if (exception.statusCode() == 403) {
@@ -158,12 +158,12 @@ public class ChessClient {
                 int gameNumber = Integer.parseInt(params[0]);
 
                 if (gameNumber < 1 || gameNumber > listedGames.size()) {
-                    return "Invalid game ID number.";
+                    return "Please provide a valid game ID number. Type list to see all game numbers.";
                 }
 
                 int gameID = listedGames.get(gameNumber - 1).gameID();
                 server.joinGame(color, gameID);
-                return "Joined game as " + params[1] + "\n" + displayBoard(new ChessGame().getBoard(), color);
+                return "Joined game as " + color + "\n" + displayBoard(new ChessGame().getBoard(), color);
             } catch (IllegalArgumentException ex) {
                 return "Please provide a valid game ID and chess color.";
             } catch (ResponseException ex) {
@@ -190,7 +190,7 @@ public class ChessClient {
                 GameData observingGame = listedGames.get(gameNumber - 1);
                 return "You are observing " + observingGame.gameName() + "\n" + displayBoard(new ChessGame().getBoard(), ChessGame.TeamColor.WHITE);
             } catch (NumberFormatException e) {
-                return "Please provide a valid game ID.";
+                return "Please provide a valid game ID number. Type list to see all game numbers.";
             }
         }
         return "Expected: <ID>";
