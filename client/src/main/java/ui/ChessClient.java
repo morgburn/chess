@@ -177,11 +177,41 @@ public class ChessClient {
     }
 
     private String observeGame(String... params) {
-        return "Not implemented yet.";
+        if (state == State.LOGGED_OUT) {
+            return "You must log in.";
+        }
+        if (params.length == 1) {
+            try {
+                int gameNumber = Integer.parseInt(params[0]);
+                if (gameNumber < 1 || gameNumber > listedGames.size()) {
+                    return "Invalid game ID number.";
+                }
+                GameData observingGame = listedGames.get(gameNumber - 1);
+                return "You are observing " + observingGame.gameName();
+            } catch (NumberFormatException e) {
+                return "Please provide a valid game ID.";
+            }
+        }
+        return "Expected: <ID>";
     }
 
-    private String logout(String... params) {
-        return "Not implemented yet.";
+    private String logout() {
+        if (state == State.LOGGED_OUT) {
+            return "You must log in.";
+        }
+        try {
+            server.logout();
+            state = State.LOGGED_OUT;
+            listedGames.clear();
+            return "You have logged out.";
+        } catch (ResponseException exception) {
+            if (exception.statusCode() == 401) {
+                state = State.LOGGED_OUT;
+                listedGames.clear();
+                return "You have logged out.";
+            }
+            return "Something went wrong. Try again.";
+        }
     }
 
     private String help() {
