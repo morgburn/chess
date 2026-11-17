@@ -124,13 +124,20 @@ public class ChessGame {
                 ChessPosition position = new ChessPosition(row, col);
                 ChessPiece piece = currentBoard.getPiece(position);
                 if (piece != null && piece.getTeamColor() != teamColor) {
-                    Collection<ChessMove> possibleMoves = piece.pieceMoves(currentBoard, position);
-                    for (ChessMove move : possibleMoves) {
-                        if (move.getEndPosition().equals(kingPosition)) {
-                            return true;
-                        }
+                    if (canAttackPosition(piece, position, kingPosition)) {
+                        return true;
                     }
                 }
+            }
+        }
+        return false;
+    }
+
+    private boolean canAttackPosition(ChessPiece piece, ChessPosition position, ChessPosition kingPosition) {
+        Collection<ChessMove> possibleMoves = piece.pieceMoves(currentBoard, position);
+        for (ChessMove move : possibleMoves) {
+            if (move.getEndPosition().equals(kingPosition)) {
+                return true;
             }
         }
         return false;

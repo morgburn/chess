@@ -63,7 +63,8 @@ public class GameService {
         return new CreateGameResult(createdGameID);
     }
 
-    public void joinGame(JoinGameRequest joinGameRequest) throws UnauthorizedException, BadRequestException, AlreadyTakenException, DataAccessException {
+    public void joinGame(JoinGameRequest joinGameRequest)
+            throws UnauthorizedException, BadRequestException, AlreadyTakenException, DataAccessException {
         if (joinGameRequest == null) {
             throw new BadRequestException("Error: bad request");
         }

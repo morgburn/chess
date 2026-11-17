@@ -93,7 +93,8 @@ class SQLGameDAOTest {
 
     @Test
     void updateGameDoesNotExist() {
-        DataAccessException deleteException = assertThrows(DataAccessException.class, () -> gameDAO.updateGame(5, ChessGame.TeamColor.WHITE, "myUsername"));
+        DataAccessException deleteException = assertThrows(DataAccessException.class,
+                () -> gameDAO.updateGame(5, ChessGame.TeamColor.WHITE, "myUsername"));
         assertEquals("Game doesn't exist", deleteException.getMessage());
     }
 
