@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class DatabaseInitializer {
 
-    static public final String[] createStatements = {
+    static public final String[] CREATE_STATEMENTS = {
             """
             CREATE TABLE IF NOT EXISTS  users (
               `username` varchar(256) NOT NULL,
@@ -41,7 +41,7 @@ public class DatabaseInitializer {
     static public void configureDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();
         try (Connection conn = DatabaseManager.getConnection()) {
-            for (String statement : createStatements) {
+            for (String statement : CREATE_STATEMENTS) {
                 try (var preparedStatement = conn.prepareStatement(statement)) {
                     preparedStatement.executeUpdate();
                 }
