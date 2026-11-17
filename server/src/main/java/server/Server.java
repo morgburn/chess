@@ -1,14 +1,17 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.*;
+import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
+import dataaccess.GameDAO;
+import dataaccess.UserDAO;
 import dataaccess.sql.SQLAuthDAO;
 import dataaccess.sql.SQLGameDAO;
 import dataaccess.sql.SQLUserDAO;
 import handler.ClearHandler;
 import handler.GameHandler;
 import handler.UserHandler;
-import io.javalin.*;
+import io.javalin.Javalin;
 import service.*;
 
 import java.util.Map;

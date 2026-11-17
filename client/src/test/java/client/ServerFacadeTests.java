@@ -2,13 +2,14 @@ package client;
 
 import chess.ChessGame;
 import model.GameData;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import server.Server;
-import service.AlreadyTakenException;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,7 +28,9 @@ public class ServerFacadeTests {
     }
 
     @BeforeEach
-    public void clearServer() throws ResponseException {facade.clear();}
+    public void clearServer() throws ResponseException {
+        facade.clear();
+    }
 
     @AfterAll
     static void stopServer() {

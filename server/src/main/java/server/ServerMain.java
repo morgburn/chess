@@ -1,10 +1,7 @@
 package server;
 
-import chess.*;
-import dataaccess.DataAccessException;
-
 public class ServerMain {
-    public static void main(String[] args) throws DataAccessException {
+    public static void main(String[] args) {
         var port = 8080;
         Server server = new Server();
         server.run(port);

@@ -50,7 +50,7 @@ public class BishopMovesCalculator {
             }
         }
 
-    return possibleMoves;
+        return possibleMoves;
     }
 
     private boolean addMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> possibleMoves, int newRow, int newCol) {

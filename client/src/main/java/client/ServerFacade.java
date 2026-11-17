@@ -137,5 +137,6 @@ public class ServerFacade {
         return status == 200;
     }
 
-    private record GameList(Collection<GameData> games) {}
+    private record GameList(Collection<GameData> games) {
+    }
 }

@@ -61,17 +61,17 @@ class GameServiceTest {
     }
 
     @Test
-    void listGamesBadRequestNull() {
+    void listGamesNullToken() {
         ListGamesRequest listGamesRequest = new ListGamesRequest(null);
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> service.listGames(listGamesRequest));
-        assertEquals("Error: bad request", exception.getMessage());
+        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () -> service.listGames(listGamesRequest));
+        assertEquals("Error: unauthorized", exception.getMessage());
     }
 
     @Test
-    void listGamesBadRequestEmptyToken() {
+    void listGamesEmptyToken() {
         ListGamesRequest listGamesRequest = new ListGamesRequest("");
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> service.listGames(listGamesRequest));
-        assertEquals("Error: bad request", exception.getMessage());
+        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () -> service.listGames(listGamesRequest));
+        assertEquals("Error: unauthorized", exception.getMessage());
     }
 
     @Test

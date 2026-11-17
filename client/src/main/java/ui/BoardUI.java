@@ -63,8 +63,7 @@ public class BoardUI {
                 case ROOK -> chessPiece.append(WHITE_ROOK);
                 case PAWN -> chessPiece.append(WHITE_PAWN);
             }
-        }
-        else {
+        } else {
             chessPiece.append(SET_TEXT_COLOR_BLUE);
             switch (piece.getPieceType()) {
                 case QUEEN -> chessPiece.append(BLACK_QUEEN);

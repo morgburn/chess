@@ -11,32 +11,32 @@ public class KingMovesCalculator {
         int col = myPosition.getColumn();
 
         if (col < 8) {
-            addMoves(board, myPosition, possibleMoves, row, col+1);
+            addMoves(board, myPosition, possibleMoves, row, col + 1);
 
             if (row < 8) {
-                addMoves(board, myPosition, possibleMoves, row+1, col+1);
+                addMoves(board, myPosition, possibleMoves, row + 1, col + 1);
             }
             if (row > 1) {
-                addMoves(board, myPosition, possibleMoves, row-1, col+1);
+                addMoves(board, myPosition, possibleMoves, row - 1, col + 1);
             }
         }
 
         if (col > 1) {
-            addMoves(board, myPosition, possibleMoves, row, col-1);
+            addMoves(board, myPosition, possibleMoves, row, col - 1);
             if (row < 8) {
-                addMoves(board, myPosition, possibleMoves, row+1, col-1);
+                addMoves(board, myPosition, possibleMoves, row + 1, col - 1);
             }
             if (row > 1) {
-                addMoves(board, myPosition, possibleMoves, row-1, col-1);
+                addMoves(board, myPosition, possibleMoves, row - 1, col - 1);
             }
         }
 
         if (row < 8) {
-            addMoves(board, myPosition, possibleMoves, row+1, col);
+            addMoves(board, myPosition, possibleMoves, row + 1, col);
         }
 
         if (row > 1) {
-            addMoves(board, myPosition, possibleMoves, row-1, col);
+            addMoves(board, myPosition, possibleMoves, row - 1, col);
         }
 
         return possibleMoves;

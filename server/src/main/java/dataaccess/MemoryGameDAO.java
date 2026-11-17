@@ -3,7 +3,10 @@ package dataaccess;
 import chess.ChessGame;
 import model.GameData;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MemoryGameDAO implements GameDAO {
     private final Map<Integer, GameData> allGameData = new HashMap<>();
@@ -48,5 +51,7 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
-    public void clear() { allGameData.clear(); }
+    public void clear() {
+        allGameData.clear();
+    }
 }

@@ -94,8 +94,7 @@ public class ChessGame {
         Collection<ChessMove> validMoves = validMoves(startPosition);
         if (!validMoves.contains(move) || piece.getTeamColor() != teamTurn) {
             throw new InvalidMoveException("Invalid Move");
-        }
-        else {
+        } else {
             currentBoard.addPiece(startPosition, null);
             if (move.getPromotionPiece() != null) {
                 piece = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
@@ -105,7 +104,9 @@ public class ChessGame {
 
             if (teamTurn == TeamColor.WHITE) {
                 setTeamTurn(TeamColor.BLACK);
-            } else {setTeamTurn(TeamColor.WHITE);}
+            } else {
+                setTeamTurn(TeamColor.WHITE);
+            }
         }
     }
 

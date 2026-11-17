@@ -17,8 +17,7 @@ public class PawnMovesCalculator {
                 if (board.getPiece(newPosition) == null) {
                     if (row == 7) {
                         addPromotionPiece(myPosition, possibleMoves, newPosition);
-                    }
-                    else {
+                    } else {
                         possibleMoves.add(new ChessMove(myPosition, newPosition, null));
                         newPosition = new ChessPosition(row + 2, col);
                         if (row == 2 && board.getPiece(newPosition) == null) {
@@ -55,8 +54,7 @@ public class PawnMovesCalculator {
                 if (board.getPiece(newPosition) == null) {
                     if (row == 2) {
                         addPromotionPiece(myPosition, possibleMoves, newPosition);
-                    }
-                    else {
+                    } else {
                         possibleMoves.add(new ChessMove(myPosition, newPosition, null));
                         newPosition = new ChessPosition(row - 2, col);
                         if (row == 7 && board.getPiece(newPosition) == null) {
@@ -90,9 +88,9 @@ public class PawnMovesCalculator {
     }
 
     private void addPromotionPiece(ChessPosition myPosition, Collection<ChessMove> possibleMoves, ChessPosition newPosition) {
-            possibleMoves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.QUEEN));
-            possibleMoves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.KNIGHT));
-            possibleMoves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.ROOK));
-            possibleMoves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.BISHOP));
+        possibleMoves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.QUEEN));
+        possibleMoves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.KNIGHT));
+        possibleMoves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.ROOK));
+        possibleMoves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.BISHOP));
     }
 }

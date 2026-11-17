@@ -70,8 +70,7 @@ public class ChessClient {
                 server.register(params[0], params[1], params[2]);
                 state = State.LOGGED_IN;
                 return "Registered and logged in as " + params[0] + "\n" + help();
-            }
-            catch (ResponseException exception) {
+            } catch (ResponseException exception) {
                 if (exception.statusCode() == 403) {
                     return "Username already taken.";
                 } else {
@@ -91,8 +90,7 @@ public class ChessClient {
                 server.login(params[0], params[1]);
                 state = State.LOGGED_IN;
                 return "Logged in as " + params[0] + "\n" + help();
-            }
-            catch (ResponseException exception) {
+            } catch (ResponseException exception) {
                 if (exception.statusCode() == 401) {
                     return "Wrong username or password";
                 } else {
@@ -111,8 +109,7 @@ public class ChessClient {
             try {
                 server.createGame(params[0]);
                 return "Created game: " + params[0];
-            }
-            catch (ResponseException exception) {
+            } catch (ResponseException exception) {
                 return "Something went wrong. Try again.";
             }
         }
